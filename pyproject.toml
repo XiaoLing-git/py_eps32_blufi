@@ -1,0 +1,17 @@
+[tool.poetry]
+name = "py_esp32_blufi"
+version = "1.0.0"
+description = "python support for esp32_blufi"
+authors = ["xiaoling <samuel.ling.xiao@qq.com>"]
+readme = "README.md"
+packages = [{include = "blufi"}]
+
+[tool.poetry.dependencies]
+python = ">=3.10,<=3.14"
+pre-commit = "4.2.0"
+pydantic = "^2.11.7"
+bleak = "1.0.1"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
