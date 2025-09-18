@@ -15,9 +15,14 @@ logger = logging.getLogger(__name__)
 class AsyncBlufiConnection:
     """Async Blufi Connection"""
 
+    __slots__ = (
+        "__format_address",
+        "__client",
+    )
+
     def __init__(self, device_address: str) -> None:
         """AsyncBlufiConnection init"""
-        self.__address = format_mac_address(device_address.strip().upper())
+        self.__format_address = format_mac_address(device_address.strip().upper())
         self.__client: BleakClient | None = None
 
     @property
@@ -35,7 +40,7 @@ class AsyncBlufiConnection:
     @property
     def address(self) -> str:
         """get formatted address"""
-        return self.__address
+        return self.__format_address
 
     async def async_connect(self) -> None:
         """async connect"""

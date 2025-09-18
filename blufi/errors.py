@@ -34,3 +34,23 @@ class AsyncBlufiDisconnectionError(BlufiBaseException):
 
 class AsyncBlufiAddressFormatError(BlufiBaseException):
     """Async Blufi Address Format Error."""
+
+
+class AsyncBlufiGetServiceException(BlufiBaseException):
+    """Async Blufi Get Service Exception."""
+
+
+class AsyncBlufiGetUUIDException(BlufiBaseException):
+    """Async Blufi Get UUID Exception."""
+
+
+class AsyncBlufiWriteReadException(BlufiBaseException):
+    """Async Blufi Write Read Exception."""
+
+
+class AsyncBlufiWriteException(AsyncBlufiWriteReadException):
+    """Async Blufi Write Exception."""
+
+
+class AsyncBlufiReadException(AsyncBlufiWriteReadException):
+    """Async Blufi Read Exception."""
