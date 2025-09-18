@@ -1,14 +1,15 @@
 """"""
 
-from pydantic import BaseModel
-
-# class BlufiBaseModel(BaseModel):
-#     """base model for SecurityMode."""
-#
-#     pass
+from enum import Enum
 
 
-class ControlAddress(BaseModel):  # type: ignore[misc]
+class BlufiBaseEnum(Enum):
+    """base model for SecurityMode."""
+
+    pass
+
+
+class ControlAddress(BlufiBaseEnum):
     """base model for SecurityMode."""
 
     ACK = 0x00
@@ -23,7 +24,7 @@ class ControlAddress(BaseModel):  # type: ignore[misc]
     GET_WIFI_LIST = 0x09
 
 
-class DataAddress(BaseModel):  # type: ignore[misc]
+class DataAddress(BlufiBaseEnum):
     """base model for SecurityMode."""
 
     NEG = 0x00
@@ -51,7 +52,7 @@ class DataAddress(BaseModel):  # type: ignore[misc]
     WIFI_STA_CONN_RSSI = 0x16
 
 
-class ErrorCode(BaseModel):  # type: ignore[misc]
+class ErrorCode(BlufiBaseEnum):
     """base model for SecurityMode."""
 
     sequence_error = 0x00
@@ -68,7 +69,7 @@ class ErrorCode(BaseModel):  # type: ignore[misc]
     wifi_scan_error = 0x0B
 
 
-class SecurityMode(BaseModel):  # type: ignore[misc]
+class SecurityMode(BlufiBaseEnum):
     """base model for SecurityMode."""
 
     No_Checksum_No_Encryption = 0x00
@@ -77,7 +78,7 @@ class SecurityMode(BaseModel):  # type: ignore[misc]
     Checksum_Encryption = 0x03
 
 
-class WifiOpMode(BaseModel):  # type: ignore[misc]
+class WifiOpMode(BlufiBaseEnum):
     """base model for WifiOpMode."""
 
     NULL = 0x00
@@ -86,7 +87,7 @@ class WifiOpMode(BaseModel):  # type: ignore[misc]
     SOFT_AP_AND_STA = 0x03
 
 
-class SoftAPMode(BaseModel):  # type: ignore[misc]
+class SoftAPMode(BlufiBaseEnum):
     """base model for SoftAPMode."""
 
     OPEN = 0x00
