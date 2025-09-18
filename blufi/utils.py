@@ -1,1 +1,40 @@
-""""""
+"""utils"""
+
+from .errors import AsyncBlufiAddressFormatError
+
+
+def assert_address_format(address: str) -> None:
+    """
+    assert address format
+    :param address:
+    :return: None
+    """
+    target_str = "0123456789ABCDEF:"
+    for i in address:
+        if i.upper() not in target_str:
+            raise AsyncBlufiAddressFormatError(
+                f"Device address must be in |0123456789ABCDEF:|, current address: {address} now get {i} "
+            )
+
+    if len(address) != 12 or len(address) != 17:
+        raise AsyncBlufiAddressFormatError(f"Abnormal address length: {address} {len(address)}")
+
+    format_address = address.replace(":", "")
+    if len(format_address) != 12:
+        raise AsyncBlufiAddressFormatError(f"Abnormal address: {address} maybe too much |:|")
+
+
+def format_mac_address(mac: str, split: str = ":", lower: bool = True) -> str:
+    """
+    format mac address
+    :param mac:
+    :param split:
+    :param lower:
+    :return: formatted mac address[aa:bb:cc:dd:ee:ee]
+    """
+    assert_address_format(mac)
+    response = split.join([mac[i : i + 2] for i in range(0, len(mac), 2)])
+    if lower:
+        return response.lower()
+    else:
+        return response.upper()
