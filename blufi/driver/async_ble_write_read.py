@@ -45,16 +45,21 @@ class AsyncBlufiWriteRead(AsyncBlufiConnection):
         self.__timeout = timeout
 
     @property
-    def _response(self) -> bytearray:
+    def response(self) -> str:
         """only call in subclass"""
         if self.__response is None:
             raise AsyncBlufiWriteReadException("This method cannot be called during command sending")
-        return self.__response
+        return self.__response.hex()
 
     @property
-    def _command(self) -> str:
+    def command(self) -> str:
         """only call in subclass"""
         return self.__cmd
+
+    async def async_connect(self) -> None:
+        """async connect."""
+        await super().async_connect()
+        self.get_uuid()
 
     def get_device_services(self) -> dict[str, Any]:
         """
@@ -75,7 +80,7 @@ class AsyncBlufiWriteRead(AsyncBlufiConnection):
             logger.info(msg)
             raise AsyncBlufiGetServiceException(msg) from e
 
-    def get_uuid(self) -> None:
+    def get_uuid(self) -> tuple[str | None, str | None]:
         """
         get device uuid
         :return:
@@ -94,6 +99,7 @@ class AsyncBlufiWriteRead(AsyncBlufiConnection):
                     if "notify" in uuids[uuid]:
                         self.__notify_uuid = uuid
                 logger.info("get UUID succeed")
+            return self.__write_uuid, self.__notify_uuid
         except AsyncBlufiGetUUIDException as e:
             logger.info(f"{e}")
             raise e
@@ -117,13 +123,20 @@ class AsyncBlufiWriteRead(AsyncBlufiConnection):
             logger.info("The device is not connected and you try to send a command.")
             raise AsyncBlufiConnectionError(f"Please make sure the device is connected when sending the command")
 
-    async def write(self, data: str) -> None:
+    async def write(self, data: str, start_notify: bool = False) -> None:
         """
         write data to device
         :param data:
+        :param start_notify
         :return:
         """
+        if start_notify:
+            try:
+                await self._client.start_notify(self.__notify_uuid, callback=self.__notification_handler)
+            except Exception as e:
+                raise AsyncBlufiWriteReadException(f"{self.address} {self.__notify_uuid} start_notify fail msg: {e}")
         try:
+            logger.info(f"Write: {data}")
             await self._client.write_gatt_char(self.__write_uuid, bytes.fromhex(data))
         except Exception as e:
             raise AsyncBlufiWriteException(f"Device: {self.address} write_gatt_char fail: {e}") from e
@@ -133,51 +146,37 @@ class AsyncBlufiWriteRead(AsyncBlufiConnection):
         read data from device
         :return:
         """
-        self.__response = None
-        try:
-            await self._client.start_notify(self.__notify_uuid, callback=self.__notification_handler)
-        except Exception as e:
-            raise AsyncBlufiReadException(f"Device: {self.address} start_notify fail msg: {e}") from e
-
         try:
             response = await self.__read_until_timeout()
-            return response
+            logger.info(f"Read : {response.hex()}")
         except Exception as e:
             raise AsyncBlufiReadException(f"{self.address} Get response fail {e}") from e
-
-    async def async_send_command_get_response(self, cmd: str) -> bytearray:
-        """
-        async send command get response
-        :param cmd:
-        :return:
-        """
-        self.__response = None
-        self.__cmd = cmd
-        logger.info(f"Clear Response: {self.__response}")
-        try:
-            await self._client.start_notify(self.__notify_uuid, callback=self.__notification_handler)
-        except Exception as e:
-            raise AsyncBlufiWriteReadException(f"{self.address} {self.__notify_uuid} start_notify fail msg: {e}")
-
-        try:
-            await self._client.write_gatt_char(self.__write_uuid, bytes.fromhex(cmd))
-        except Exception as e:
-            raise AsyncBlufiWriteReadException(f"{self.address} {self.__write_uuid} write_gatt_char fail: {e}")
-
-        try:
-            await self.__read_until_timeout()
-        except AsyncBlufiWriteReadException as e:
-            raise AsyncBlufiWriteReadException(f"{self.address} Send Command {cmd}, {e}")
-
-        if self.__response is None:
-            raise AsyncBlufiWriteReadException("No response received")
-
-        logger.info(f"Command: {cmd} Response: {self.__response.hex()}")
 
         # try:
         #     await self._client.stop_notify(self.__notify_uuid)
         # except Exception as e:
-        #     raise AsyncBleWriteReadException(f"{self.address} stop_notify fail: {e}")
+        #     raise AsyncBlufiReadException(f"{self.address} stop_notify fail: {e}")
+
+        return response
+
+    async def async_read_after_write(self, data: str) -> bytearray:
+        """
+        async read after write
+        :param data:
+        :return:
+        """
+        self.__cmd = data
+        self.__response = None
+
+        logger.info(f"Clear Response: {self.__response}")
+
+        await self.write(self.__cmd, start_notify=True)
+        await self.read()
+
+        if self.__response is None:
+            raise AsyncBlufiWriteReadException("No response received")
+
+        logger.info(f"Data: {data} Response: {self.__response.hex()}")
 
         return self.__response
 

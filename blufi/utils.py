@@ -16,7 +16,7 @@ def assert_address_format(address: str) -> None:
                 f"Device address must be in |0123456789ABCDEF:|, current address: {address} now get {i} "
             )
 
-    if len(address) != 12 or len(address) != 17:
+    if not (len(address) == 12 or len(address) == 17):
         raise AsyncBlufiAddressFormatError(f"Abnormal address length: {address} {len(address)}")
 
     format_address = address.replace(":", "")
