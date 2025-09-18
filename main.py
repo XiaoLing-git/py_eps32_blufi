@@ -4,6 +4,7 @@ import logging
 from pprint import pprint
 
 from blufi.driver.async_ble_write_read import AsyncBlufiWriteRead
+from blufi.sequence import SerialNumber
 
 logging.basicConfig(
     level=logging.INFO,  # 核心：设置最低日志级别为DEBUG
@@ -25,4 +26,6 @@ async def fun():
     # await ble.async_disconnect()
 
 if __name__ == "__main__":
-    asyncio.run(fun())
+    # asyncio.run(fun())
+    for i in range(100):
+        print(SerialNumber().obj)
