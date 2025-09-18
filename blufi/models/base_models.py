@@ -12,6 +12,51 @@ class TypeField(Enum):
     Data = 0x01
 
 
+class Encryption(Enum):
+    """
+    Encryption
+    """
+
+    disable = 0x00
+    enable = 0x01
+
+
+class CrcCheck(Enum):
+    """
+    Crc Check
+    """
+
+    disable = 0x00 << 1
+    enable = 0x01 << 1
+
+
+class Direction(Enum):
+    """
+    Direction
+    """
+
+    device_to_esp = 0x00 << 2
+    esp_to_device = 0x01 << 2
+
+
+class Ack(Enum):
+    """
+    Ack
+    """
+
+    disable = 0x00 << 3
+    enable = 0x01 << 3
+
+
+class Sector_Data(Enum):
+    """
+    Sector Data
+    """
+
+    disable = 0x00 << 4
+    enable = 0x01 << 4
+
+
 class BlufiBaseEnum(Enum):
     """base model for SecurityMode."""
 

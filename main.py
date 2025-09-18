@@ -1,10 +1,9 @@
 """Main function entry, mainly used for debugging."""
 import asyncio
 import logging
-from pprint import pprint
 
-from blufi.driver.async_ble_write_read import AsyncBlufiWriteRead
-from blufi.sequence import SerialNumber
+from blufi.driver.async_write_read import AsyncBlufiWriteRead
+from blufi.serial_number import SerialNumber
 
 logging.basicConfig(
     level=logging.INFO,  # 核心：设置最低日志级别为DEBUG

@@ -58,3 +58,7 @@ class AsyncBlufiReadException(AsyncBlufiWriteReadException):
 
 class HexStrException(AsyncBlufiWriteReadException):
     """Hex Str Exception."""
+
+
+class GenerateCommandException(AsyncBlufiWriteReadException):
+    """HGenerateCommandException."""
