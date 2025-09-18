@@ -54,3 +54,7 @@ class AsyncBlufiWriteException(AsyncBlufiWriteReadException):
 
 class AsyncBlufiReadException(AsyncBlufiWriteReadException):
     """Async Blufi Read Exception."""
+
+
+class HexStrException(AsyncBlufiWriteReadException):
+    """Hex Str Exception."""
