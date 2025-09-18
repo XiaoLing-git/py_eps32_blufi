@@ -3,6 +3,15 @@
 from enum import Enum
 
 
+class TypeField(Enum):
+    """
+    Type Field
+    """
+
+    Control = 0x00
+    Data = 0x01
+
+
 class BlufiBaseEnum(Enum):
     """base model for SecurityMode."""
 
@@ -12,44 +21,44 @@ class BlufiBaseEnum(Enum):
 class ControlAddress(BlufiBaseEnum):
     """base model for SecurityMode."""
 
-    ACK = 0x00
-    SET_SEC_MODE = 0x01
-    SET_OP_MODE = 0x02
-    CONNECT_WIFI = 0x03
-    DISCONNECT_WIFI = 0x04
-    GET_WIFI_STATUS = 0x05
-    DEAUTHENTICATE = 0x06
-    GET_VERSION = 0x07
-    CLOSE_CONNECTION = 0x08
-    GET_WIFI_LIST = 0x09
+    ACK = 0x00 << 2
+    SET_SEC_MODE = 0x01 << 2
+    SET_OP_MODE = 0x02 << 2
+    CONNECT_WIFI = 0x03 << 2
+    DISCONNECT_WIFI = 0x04 << 2
+    GET_WIFI_STATUS = 0x05 << 2
+    DEAUTHENTICATE = 0x06 << 2
+    GET_VERSION = 0x07 << 2
+    CLOSE_CONNECTION = 0x08 << 2
+    GET_WIFI_LIST = 0x09 << 2
 
 
 class DataAddress(BlufiBaseEnum):
     """base model for SecurityMode."""
 
-    NEG = 0x00
-    STA_WIFI_BSSID = 0x01
-    STA_WIFI_SSID = 0x02
-    STA_WIFI_PASSWORD = 0x03
-    SOFTAP_WIFI_SSID = 0x04
-    SOFTAP_WIFI_PASSWORD = 0x05
-    SOFTAP_MAX_CONNECTION_COUNT = 0x06
-    SOFTAP_AUTH_MODE = 0x07
-    SOFTAP_CHANNEL = 0x08
-    USERNAME = 0x09
-    CA_CERTIFICATION = 0x0A
-    CLIENT_CERTIFICATION = 0x0B
-    SERVER_CERTIFICATION = 0x0C
-    CLIENT_PRIVATE_KEY = 0x0D
-    SERVER_PRIVATE_KEY = 0x0E
-    WIFI_CONNECTION_STATE = 0x0F
-    VERSION = 0x10
-    WIFI_LIST = 0x11
-    ERROR = 0x12
-    CUSTOM_DATA = 0x13
-    WIFI_STA_MAX_CONN_RETRY = 0x14
-    WIFI_STA_CONN_END_REASON = 0x15
-    WIFI_STA_CONN_RSSI = 0x16
+    NEG = 0x00 << 2
+    STA_WIFI_BSSID = 0x01 << 2
+    STA_WIFI_SSID = 0x02 << 2
+    STA_WIFI_PASSWORD = 0x03 << 2
+    SOFTAP_WIFI_SSID = 0x04 << 2
+    SOFTAP_WIFI_PASSWORD = 0x05 << 2
+    SOFTAP_MAX_CONNECTION_COUNT = 0x06 << 2
+    SOFTAP_AUTH_MODE = 0x07 << 2
+    SOFTAP_CHANNEL = 0x08 << 2
+    USERNAME = 0x09 << 2
+    CA_CERTIFICATION = 0x0A << 2
+    CLIENT_CERTIFICATION = 0x0B << 2
+    SERVER_CERTIFICATION = 0x0C << 2
+    CLIENT_PRIVATE_KEY = 0x0D << 2
+    SERVER_PRIVATE_KEY = 0x0E << 2
+    WIFI_CONNECTION_STATE = 0x0F << 2
+    VERSION = 0x10 << 2
+    WIFI_LIST = 0x11 << 2
+    ERROR = 0x12 << 2
+    CUSTOM_DATA = 0x13 << 2
+    WIFI_STA_MAX_CONN_RETRY = 0x14 << 2
+    WIFI_STA_CONN_END_REASON = 0x15 << 2
+    WIFI_STA_CONN_RSSI = 0x16 << 2
 
 
 class ErrorCode(BlufiBaseEnum):
