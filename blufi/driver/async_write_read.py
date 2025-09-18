@@ -130,6 +130,11 @@ class AsyncBlufiWriteRead(AsyncBlufiConnection):
         :param start_notify
         :return:
         """
+        self.__cmd = data
+        self.__response = None
+
+        logger.info(f"Clear Response: {self.__response}")
+
         if start_notify:
             try:
                 await self._client.start_notify(self.__notify_uuid, callback=self.__notification_handler)
@@ -165,10 +170,6 @@ class AsyncBlufiWriteRead(AsyncBlufiConnection):
         :param data:
         :return:
         """
-        self.__cmd = data
-        self.__response = None
-
-        logger.info(f"Clear Response: {self.__response}")
 
         await self.write(self.__cmd, start_notify=True)
         await self.read()
