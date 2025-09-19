@@ -72,12 +72,13 @@ class BaseDataModels(BaseModel):  # type: ignore[misc]
 
     def model_post_init(self, context: Any, /) -> None:
         """model_post_init"""
+        assert self.frame_control.sector_Data is Sector_Data.disable
         self.generate_crc()
 
     def generate_crc(self) -> None:
         """generate crc"""
         self.crc = CRC16.calculate(
-            f"{self.pocket_type.hex()}" f"{self.frame_control.hex()}" f"{self.data_length_hex()}" f"{self.sn}"
+            f"{self.pocket_type.hex()}{self.frame_control.hex()}{self.sn}{self.data_length_hex()}"
         )
         assert len(self.crc) == 4
 
@@ -85,9 +86,91 @@ class BaseDataModels(BaseModel):  # type: ignore[misc]
         """hex data length to str"""
         return int.to_bytes(self.data_length, byteorder="little", length=1).hex()
 
+    def __str__(self) -> str:
+        """__str__"""
+        return f"{self.pocket_type.hex()}{self.frame_control.hex()}{self.sn}{self.data_length_hex()}{self.crc}".lower()
 
-class BaseCommand(BaseDataModels):
-    """Base Command"""
+
+class ControlCommand(BaseDataModels):
+    """Control Command"""
+
+
+class ControlCommandWithData(BaseDataModels):
+    """Control Command With Data"""
+
+    data: str
+
+    def model_post_init(self, context: Any, /) -> None:
+        """model_post_init"""
+        assert self.frame_control.sector_Data is Sector_Data.disable
+        self.data_length = len(self.data)
+        self.generate_crc()
+
+    def generate_crc(self) -> None:
+        """generate crc"""
+        self.crc = CRC16.calculate(
+            f"{self.pocket_type.hex()}{self.frame_control.hex()}{self.sn}{self.data_length_hex()}{self.data_hex()}"
+        )
+        assert len(self.crc) == 4
+
+    def data_hex(self) -> str:
+        """hex data to str"""
+        return self.data.encode().hex()
+
+    def __str__(self) -> str:
+        """__str__"""
+        return (
+            f"{self.pocket_type.hex()}"
+            f"{self.frame_control.hex()}"
+            f"{self.sn}"
+            f"{self.data_length_hex()}"
+            f"{self.data_hex()}{self.crc}"
+        ).lower()
+
+
+class ControlCommandWithLargeData(BaseDataModels):
+    """Control Command With Large Data"""
+
+    remain_length: int
+    data: str
+
+    def model_post_init(self, context: Any, /) -> None:
+        """model_post_init"""
+        assert self.frame_control.sector_Data is Sector_Data.enable
+        self.data_length = len(self.data) - 2
+        self.generate_crc()
+
+    def generate_crc(self) -> None:
+        """generate crc"""
+        self.crc = CRC16.calculate(
+            f"{self.pocket_type.hex()}"
+            f"{self.frame_control.hex()}"
+            f"{self.sn}"
+            f"{self.data_length_hex()}"
+            f"{self.remain_data_length_hex()}"
+            f"{self.data_hex()}"
+        )
+        assert len(self.crc) == 4
+
+    def remain_data_length_hex(self) -> str:
+        """hex data length to str"""
+        return int.to_bytes(self.remain_length, byteorder="little", length=2).hex()
+
+    def data_length_hex(self) -> str:
+        """hex data length to str"""
+        return int.to_bytes(self.data_length, byteorder="little", length=1).hex()
+
+    def __str__(self) -> str:
+        """__str__"""
+        return (
+            f"{self.pocket_type.hex()}"
+            f"{self.frame_control.hex()}"
+            f"{self.sn}"
+            f"{self.data_length_hex()}"
+            f"{self.remain_data_length_hex()}"
+            f"{self.data_hex()}"
+            f"{self.crc}"
+        ).lower()
 
 
 class BaseResponse(BaseDataModels):
@@ -96,15 +179,15 @@ class BaseResponse(BaseDataModels):
 
 if __name__ == "__main__":
 
-    bc = BaseCommand(
+    bc = ControlCommandWithData(
         pocket_type=PocketType(type_field=TypeField.Data, func_code=DataAddress.STA_WIFI_BSSID),
         frame_control=FrameControl(
             encryption=Encryption.enable,
             crc_check=CrcCheck.disable,
             direction=Direction.device_to_esp,
             ack=Ack.disable,
-            sector_Data=Sector_Data.disable,
+            sector_Data=Sector_Data.enable,
         ),
-        crc="135",
+        data="hello world",
     )
     print(bc)
