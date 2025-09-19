@@ -1,5 +1,7 @@
 """"""
 
+from typing import Any
+
 from blufi.errors import ParseResponseException
 from blufi.models.base_models import (
     Ack,
@@ -21,10 +23,6 @@ class BlufiResponse:
     def __init__(self, content: str = "4904000100"):
         """BlufiResponse init"""
         self.__content = content
-
-    def parser(self) -> None:
-        """parse"""
-        self.assert_status()
 
     def assert_status(self) -> None:
         """assert status"""
@@ -68,11 +66,89 @@ class BlufiResponse:
     @property
     def data(self) -> str:
         """data"""
+        if self.data_length == 0:
+            return ""
         return self.__content[8 : (8 + 2 * self.data_length)]
 
 
+class ResponseParser(BlufiResponse):
+    """Response Parser"""
+
+    def parser(self) -> Any:
+        """parse"""
+        self.assert_status()
+        match self.pocket_type.func_code:
+            case ControlAddress.ACK:
+                pass
+            case ControlAddress.SET_SEC_MODE:
+                pass
+            case ControlAddress.SET_OP_MODE:
+                pass
+            case ControlAddress.CONNECT_WIFI:
+                pass
+            case ControlAddress.GET_WIFI_STATUS:
+                pass
+            case ControlAddress.DEAUTHENTICATE:
+                pass
+            case ControlAddress.GET_VERSION:
+                pass
+            case ControlAddress.CLOSE_CONNECTION:
+                pass
+            case ControlAddress.GET_WIFI_LIST:
+                pass
+
+            case DataAddress.NEG:
+                pass
+            case DataAddress.STA_WIFI_BSSID:
+                pass
+            case DataAddress.STA_WIFI_SSID:
+                pass
+            case DataAddress.STA_WIFI_PASSWORD:
+                pass
+            case DataAddress.SOFTAP_WIFI_SSID:
+                pass
+            case DataAddress.SOFTAP_WIFI_PASSWORD:
+                pass
+            case DataAddress.SOFTAP_MAX_CONNECTION_COUNT:
+                pass
+            case DataAddress.SOFTAP_AUTH_MODE:
+                pass
+            case DataAddress.SOFTAP_CHANNEL:
+                pass
+
+            case DataAddress.USERNAME:
+                pass
+            case DataAddress.CA_CERTIFICATION:
+                pass
+            case DataAddress.CLIENT_CERTIFICATION:
+                pass
+            case DataAddress.SERVER_CERTIFICATION:
+                pass
+            case DataAddress.CLIENT_PRIVATE_KEY:
+                pass
+            case DataAddress.SERVER_PRIVATE_KEY:
+                pass
+            case DataAddress.WIFI_CONNECTION_STATE:
+                pass
+            case DataAddress.VERSION:
+                pass
+            case DataAddress.WIFI_LIST:
+                pass
+
+            case DataAddress.ERROR:
+                pass
+            case DataAddress.CUSTOM_DATA:
+                pass
+            case DataAddress.WIFI_STA_MAX_CONN_RETRY:
+                pass
+            case DataAddress.WIFI_STA_CONN_END_REASON:
+                pass
+            case DataAddress.WIFI_STA_CONN_RSSI:
+                pass
+
+
 if __name__ == "__main__":
-    res = BlufiResponse()
+    res = ResponseParser()
     print(res.pocket_type)
     print(res.frame_control)
     print(res.data_length)
