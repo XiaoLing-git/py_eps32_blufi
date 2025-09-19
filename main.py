@@ -27,7 +27,7 @@ async def fun():
 
             frame_control=FrameControl(
                 encryption=Encryption.disable,
-                crc_check=CrcCheck.enable,
+                crc_check=CrcCheck.disable,
                 direction=Direction.device_to_esp,
                 ack=Ack.enable,
                 sector_Data=Sector_Data.disable,
@@ -35,10 +35,16 @@ async def fun():
             sn=SerialNumber().obj,
 
         )
+        print(bc.pocket_type)
+        print(bc.frame_control)
+        print(bc.sn)
         print(bc)
+        print("*"*100)
         res = await ble.async_read_after_write(str(bc))
-
         BlufiResponse(res.hex()).parser()
+        for i in range(10):
+            res = await ble.read(clear=True)
+            BlufiResponse(res.hex()).parser()
     except Exception as e:
         raise e
     finally:
@@ -47,3 +53,5 @@ async def fun():
 
 if __name__ == "__main__":
     asyncio.run(fun())
+
+    "410401020103"

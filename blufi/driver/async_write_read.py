@@ -30,7 +30,7 @@ class AsyncBlufiWriteRead(AsyncBlufiConnection):
         "__timeout",
     )
 
-    def __init__(self, device_address: str, timeout: float = 5):
+    def __init__(self, device_address: str, timeout: float = 10):
         """
         AsyncBlufiWriteRead init
         :param device_address:
@@ -146,11 +146,13 @@ class AsyncBlufiWriteRead(AsyncBlufiConnection):
         except Exception as e:
             raise AsyncBlufiWriteException(f"Device: {self.address} write_gatt_char fail: {e}") from e
 
-    async def read(self) -> bytearray:
+    async def read(self, clear: bool = False) -> bytearray:
         """
         read data from device
         :return:
         """
+        if clear:
+            self.__response = None
         try:
             response = await self.__read_until_timeout()
             logger.info(f"Read : {response.hex()}")

@@ -96,7 +96,12 @@ class ControlCommand(BaseDataModels):
 
     def __str__(self) -> str:
         """__str__"""
-        return f"{self.pocket_type.hex()}{self.frame_control.hex()}{self.sn}{self.data_length_hex()}{self.crc}".lower()
+        if self.frame_control.crc_check is CrcCheck.enable:
+            return (
+                f"{self.pocket_type.hex()}{self.frame_control.hex()}{self.sn}{self.data_length_hex()}{self.crc}".lower()
+            )
+        else:
+            return f"{self.pocket_type.hex()}{self.frame_control.hex()}{self.sn}{self.data_length_hex()}".lower()
 
 
 class ControlCommandWithData(BaseDataModels):

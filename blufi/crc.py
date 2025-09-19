@@ -1,6 +1,6 @@
 """"""
 
-from .utils import assert_hex_str
+from blufi.utils import assert_hex_str
 
 
 class CRC16:
@@ -292,15 +292,18 @@ class CRC16:
             table_index = (crc >> 8) ^ byte
             crc = (CRC16._CRC_TABLE[table_index] ^ (crc << 8)) & 0xFFFF
         crc ^= xor_out
-        return f"{crc:04X}"
+
+        low_byte = (0x00FF & crc) << 8
+        high_byte = (0xFF00 & crc) >> 8
+        return f"{low_byte|high_byte:04X}"
 
 
 # # -------------------------- 测试示例 --------------------------
 # if __name__ == "__main__":
 #     # 测试 1：验证与原代码结果一致性（Blufi 典型数据包）
-#     blufi_packet = "AA550100050102030405"
+#     blufi_packet = "1c0a0000"
 #     crc_result = CRC16.calculate(blufi_packet)
 #     print(f"测试 1 - 整数: {crc_result}")
 #
-#     res = BlufiCRC.calcCRC(0,[0xAA, 0x55, 0x01, 0x00, 0x05, 0x01, 0x02, 0x03, 0x04, 0x05])
+#     res = BlufiCRC.calcCRC(0,[0x1c, 0x0a, 0x00, 0x00])
 #     print(int.to_bytes(res,byteorder="little",length=2))
