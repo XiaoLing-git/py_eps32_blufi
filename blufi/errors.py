@@ -56,9 +56,17 @@ class AsyncBlufiReadException(AsyncBlufiWriteReadException):
     """Async Blufi Read Exception."""
 
 
-class HexStrException(AsyncBlufiWriteReadException):
+class HexStrException(BlufiBaseException):
     """Hex Str Exception."""
 
 
-class GenerateCommandException(AsyncBlufiWriteReadException):
+class GenerateCommandException(BlufiBaseException):
     """HGenerateCommandException."""
+
+
+class EnumItemNotExistError(BlufiBaseException):
+    """Enum Item Not Exist Error."""
+
+
+class ParseResponseException(BlufiBaseException):
+    """Parse Response Exception"""

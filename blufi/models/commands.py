@@ -67,7 +67,7 @@ class BaseDataModels(BaseModel):  # type: ignore[misc]
     pocket_type: PocketType
     frame_control: FrameControl
     data_length: int = 0
-    sn: str = SerialNumber().obj
+    sn: str
     crc: str | None = None
 
     def model_post_init(self, context: Any, /) -> None:

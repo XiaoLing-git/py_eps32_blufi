@@ -5,6 +5,7 @@ import logging
 from blufi.driver.async_write_read import AsyncBlufiWriteRead
 from blufi.models.base_models import TypeField, ControlAddress, Encryption, CrcCheck, Direction, Ack, Sector_Data
 from blufi.models.commands import ControlCommandWithData, ControlCommand, PocketType, FrameControl
+from blufi.models.response import BlufiResponse
 from blufi.serial_number import SerialNumber
 
 logging.basicConfig(
@@ -14,29 +15,34 @@ logging.basicConfig(
 )
 
 async def fun():
-    ble = AsyncBlufiWriteRead(device_address="8CBFEA852D7E")
+    try:
+        ble = AsyncBlufiWriteRead(device_address="8CBFEA852D7E")
 
-    await ble.async_connect()
+        await ble.async_connect()
 
-    bc = ControlCommand(
-        pocket_type=PocketType(
-            type_field=TypeField.Control,
-            func_code=ControlAddress.GET_VERSION),
+        bc = ControlCommand(
+            pocket_type=PocketType(
+                type_field=TypeField.Control,
+                func_code=ControlAddress.GET_VERSION),
 
-        frame_control=FrameControl(
-            encryption=Encryption.disable,
-            crc_check=CrcCheck.enable,
-            direction=Direction.device_to_esp,
-            ack=Ack.enable,
-            sector_Data=Sector_Data.disable,
-        ),
-        data_length=3
-    )
-    print(bc)
-    await ble.async_read_after_write(str(bc))
+            frame_control=FrameControl(
+                encryption=Encryption.disable,
+                crc_check=CrcCheck.enable,
+                direction=Direction.device_to_esp,
+                ack=Ack.enable,
+                sector_Data=Sector_Data.disable,
+            ),
+            sn=SerialNumber().obj,
 
+        )
+        print(bc)
+        res = await ble.async_read_after_write(str(bc))
 
-    await ble.async_disconnect()
+        BlufiResponse(res.hex()).parser()
+    except Exception as e:
+        raise e
+    finally:
+        await ble.async_disconnect()
     # await ble.async_disconnect()
 
 if __name__ == "__main__":
