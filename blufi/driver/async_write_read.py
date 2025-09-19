@@ -1,5 +1,6 @@
 """"""
 
+import asyncio
 import logging
 import time
 from typing import Any
@@ -172,8 +173,27 @@ class AsyncBlufiWriteRead(AsyncBlufiConnection):
         :param data:
         :return:
         """
-        await self.write(data, start_notify=True)
-        await self.read()
+        self.__cmd = data
+        self.__response = None
+
+        logger.info(f"Clear Response: {self.__response}")
+
+        try:
+            await self._client.start_notify(self.__notify_uuid, callback=self.__notification_handler)
+        except Exception as e:
+            raise AsyncBlufiWriteReadException(f"{self.address} {self.__notify_uuid} start_notify fail msg: {e}")
+
+        try:
+            logger.info(f"Write: {data}")
+            await self._client.write_gatt_char(self.__write_uuid, bytes.fromhex(data))
+        except Exception as e:
+            raise AsyncBlufiWriteException(f"Device: {self.address} write_gatt_char fail: {e}") from e
+
+        try:
+            response = await self.__read_until_timeout()
+            logger.info(f"Read : {response.hex()}")
+        except Exception as e:
+            raise AsyncBlufiReadException(f"{self.address} Get response fail {e}") from e
 
         if self.__response is None:
             raise AsyncBlufiWriteReadException("No response received")
@@ -189,6 +209,7 @@ class AsyncBlufiWriteRead(AsyncBlufiConnection):
         """
         start_time = time.time()
         while self.__response is None:
+            await asyncio.sleep(0.01)
             if time.time() - start_time > self.__timeout:
                 raise AsyncBlufiReadException(f"Get response timeout Timeout = {self.__timeout} s")
         return self.__response

@@ -3,7 +3,8 @@ import asyncio
 import logging
 
 from blufi.driver.async_write_read import AsyncBlufiWriteRead
-from blufi.models.base_models import TypeField, ControlAddress, Encryption, CrcCheck, Direction, Ack, Sector_Data
+from blufi.models.base_models import TypeField, ControlAddress, Encryption, CrcCheck, Direction, Ack, Sector_Data, \
+    DataAddress
 from blufi.models.commands import ControlCommandWithData, ControlCommand, PocketType, FrameControl
 from blufi.models.response import BlufiResponse
 from blufi.serial_number import SerialNumber
@@ -41,10 +42,20 @@ async def fun():
         print(bc)
         print("*"*100)
         res = await ble.async_read_after_write(str(bc))
-        BlufiResponse(res.hex()).parser()
-        for i in range(10):
-            res = await ble.read(clear=True)
-            BlufiResponse(res.hex()).parser()
+        br = BlufiResponse(res.hex())
+        br.parser()
+        print("#"*100)
+        if br.pocket_type.func_code is DataAddress.VERSION:
+            pass
+        else:
+            for i in range(10):
+                res = await ble.read(clear=True)
+                br = BlufiResponse(res.hex())
+                br.parser()
+                print("*" * 100)
+                if br.pocket_type.func_code is DataAddress.VERSION:
+                    break
+
     except Exception as e:
         raise e
     finally:
