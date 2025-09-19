@@ -27,10 +27,12 @@ ifeq ($(DETECTED_OS),Windows)
 	if exist "$(CURRENT_DIR)__pycache__" ($(RMDIR) "$(CURRENT_DIR)__pycache__")
 	if exist "$(CURRENT_DIR)driver/__pycache__" ($(RMDIR) "$(CURRENT_DIR)driver/__pycache__")
 	if exist "$(CURRENT_DIR)models/__pycache__" ($(RMDIR) "$(CURRENT_DIR)models/__pycache__")
+	if exist "$(CURRENT_DIR)security/__pycache__" ($(RMDIR) "$(CURRENT_DIR)security/__pycache__")
 else
 	$(RM) "$(CURRENT_DIR)$(SEP)__pycache__"
 	$(RM) "$(CURRENT_DIR)$(SEP)driver$(SEP)__pycache__"
 	$(RM) "$(CURRENT_DIR)$(SEP)models$(SEP)__pycache__"
+	$(RM) "$(CURRENT_DIR)$(SEP)security$(SEP)__pycache__"
 endif
 
 
