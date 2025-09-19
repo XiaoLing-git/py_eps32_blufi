@@ -4,8 +4,18 @@ from typing import Any
 
 from pydantic import BaseModel
 
+from blufi.crc import CRC16
 from blufi.errors import GenerateCommandException
-from blufi.models.base_models import ControlAddress, DataAddress, TypeField
+from blufi.models.base_models import (
+    Ack,
+    ControlAddress,
+    CrcCheck,
+    DataAddress,
+    Direction,
+    Encryption,
+    Sector_Data,
+    TypeField,
+)
 from blufi.serial_number import SerialNumber
 
 
@@ -30,31 +40,71 @@ class PocketType(BaseModel):  # type: ignore[misc]
         return f"{value:02X}"
 
 
-class BaseCommands(BaseModel):  # type: ignore[misc]
-    """Base Commands"""
+class FrameControl(BaseModel):  # type: ignore[misc]
+    """Frame Control"""
+
+    encryption: Encryption
+    crc_check: CrcCheck
+    direction: Direction
+    ack: Ack
+    sector_Data: Sector_Data
+
+    def hex(self) -> str:
+        """hex to str"""
+        value = (
+            self.encryption.value
+            | self.crc_check.value
+            | self.direction.value
+            | self.ack.value
+            | self.sector_Data.value
+        )
+        return f"{value:02X}"
+
+
+class BaseDataModels(BaseModel):  # type: ignore[misc]
+    """Base Data Model"""
 
     pocket_type: PocketType
-    frame_control: int
-
-    data_length: int | None = None
-    sn: str | None = None
+    frame_control: FrameControl
+    data_length: int = 0
+    sn: str = SerialNumber().obj
     crc: str | None = None
 
     def model_post_init(self, context: Any, /) -> None:
         """model_post_init"""
-        print(self.pocket_type)
-        self.sn = SerialNumber().obj
-        self.crc = "1236"
+        self.generate_crc()
+
+    def generate_crc(self) -> None:
+        """generate crc"""
+        self.crc = CRC16.calculate(
+            f"{self.pocket_type.hex()}" f"{self.frame_control.hex()}" f"{self.data_length_hex()}" f"{self.sn}"
+        )
         assert len(self.crc) == 4
+
+    def data_length_hex(self) -> str:
+        """hex data length to str"""
+        return int.to_bytes(self.data_length, byteorder="little", length=1).hex()
+
+
+class BaseCommand(BaseDataModels):
+    """Base Command"""
+
+
+class BaseResponse(BaseDataModels):
+    """Base response"""
 
 
 if __name__ == "__main__":
 
-    bc = BaseCommands(
+    bc = BaseCommand(
         pocket_type=PocketType(type_field=TypeField.Data, func_code=DataAddress.STA_WIFI_BSSID),
-        frame_control=2,
-        sn="12",
-        data_length=2,
+        frame_control=FrameControl(
+            encryption=Encryption.enable,
+            crc_check=CrcCheck.disable,
+            direction=Direction.device_to_esp,
+            ack=Ack.disable,
+            sector_Data=Sector_Data.disable,
+        ),
         crc="135",
     )
     print(bc)
