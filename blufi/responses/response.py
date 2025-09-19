@@ -79,72 +79,72 @@ class ResponseParser(BlufiResponse):
         self.assert_status()
         match self.pocket_type.func_code:
             case ControlAddress.ACK:
-                pass
+                return self.data
             case ControlAddress.SET_SEC_MODE:
-                pass
+                return None
             case ControlAddress.SET_OP_MODE:
-                pass
+                return None
             case ControlAddress.CONNECT_WIFI:
-                pass
+                return None
             case ControlAddress.GET_WIFI_STATUS:
-                pass
+                return None
             case ControlAddress.DEAUTHENTICATE:
-                pass
+                return None
             case ControlAddress.GET_VERSION:
-                pass
+                return None
             case ControlAddress.CLOSE_CONNECTION:
-                pass
+                return None
             case ControlAddress.GET_WIFI_LIST:
-                pass
+                return None
 
             case DataAddress.NEG:
-                pass
+                return None
             case DataAddress.STA_WIFI_BSSID:
-                pass
+                return None
             case DataAddress.STA_WIFI_SSID:
-                pass
+                return None
             case DataAddress.STA_WIFI_PASSWORD:
-                pass
+                return None
             case DataAddress.SOFTAP_WIFI_SSID:
-                pass
+                return None
             case DataAddress.SOFTAP_WIFI_PASSWORD:
-                pass
+                return None
             case DataAddress.SOFTAP_MAX_CONNECTION_COUNT:
-                pass
+                return None
             case DataAddress.SOFTAP_AUTH_MODE:
-                pass
+                return None
             case DataAddress.SOFTAP_CHANNEL:
-                pass
+                return None
 
             case DataAddress.USERNAME:
-                pass
+                return None
             case DataAddress.CA_CERTIFICATION:
-                pass
+                return None
             case DataAddress.CLIENT_CERTIFICATION:
-                pass
+                return None
             case DataAddress.SERVER_CERTIFICATION:
-                pass
+                return None
             case DataAddress.CLIENT_PRIVATE_KEY:
-                pass
+                return None
             case DataAddress.SERVER_PRIVATE_KEY:
-                pass
+                return None
             case DataAddress.WIFI_CONNECTION_STATE:
-                pass
+                return None
             case DataAddress.VERSION:
-                pass
+                return None
             case DataAddress.WIFI_LIST:
-                pass
-
+                return None
             case DataAddress.ERROR:
-                pass
+                return None
             case DataAddress.CUSTOM_DATA:
-                pass
+                return None
             case DataAddress.WIFI_STA_MAX_CONN_RETRY:
-                pass
+                return None
             case DataAddress.WIFI_STA_CONN_END_REASON:
-                pass
+                return None
             case DataAddress.WIFI_STA_CONN_RSSI:
-                pass
+                return None
+        return None
 
 
 if __name__ == "__main__":

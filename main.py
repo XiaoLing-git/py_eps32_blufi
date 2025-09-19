@@ -6,7 +6,7 @@ from blufi.driver.async_write_read import AsyncBlufiWriteRead
 from blufi.models.base_models import TypeField, ControlAddress, Encryption, CrcCheck, Direction, Ack, Sector_Data, \
     DataAddress
 from blufi.models.commands import ControlCommand, PocketType, FrameControl
-from blufi.responses.response import BlufiResponse
+from blufi.responses.response import BlufiResponse, ResponseParser
 from blufi.serial_number import SerialNumber
 
 logging.basicConfig(
@@ -42,7 +42,7 @@ async def fun():
         print(bc)
         print("*"*100)
         res = await ble.async_read_after_write(str(bc))
-        br = BlufiResponse(res.hex())
+        br = ResponseParser(res.hex())
         br.parser()
         print("#"*100)
         if br.pocket_type.func_code is DataAddress.VERSION:
@@ -50,7 +50,43 @@ async def fun():
         else:
             for i in range(10):
                 res = await ble.read(clear=True)
-                br = BlufiResponse(res.hex())
+                br = ResponseParser(res.hex())
+                br.parser()
+                print("*" * 100)
+                if br.pocket_type.func_code is DataAddress.VERSION:
+                    break
+
+        print("-"*100)
+        bc = ControlCommand(
+            pocket_type=PocketType(
+                type_field=TypeField.Control,
+                func_code=ControlAddress.GET_VERSION),
+
+            frame_control=FrameControl(
+                encryption=Encryption.disable,
+                crc_check=CrcCheck.disable,
+                direction=Direction.device_to_esp,
+                ack=Ack.enable,
+                sector_Data=Sector_Data.disable,
+            ),
+            sn=SerialNumber().obj,
+
+        )
+        print(bc.pocket_type)
+        print(bc.frame_control)
+        print(bc.sn,"SN")
+        print(bc)
+        print("*" * 100)
+        res = await ble.async_read_after_write(str(bc))
+        br = ResponseParser(res.hex())
+        br.parser()
+        print("#" * 100)
+        if br.pocket_type.func_code is DataAddress.VERSION:
+            pass
+        else:
+            for i in range(10):
+                res = await ble.read(clear=True)
+                br = ResponseParser(res.hex())
                 br.parser()
                 print("*" * 100)
                 if br.pocket_type.func_code is DataAddress.VERSION:
