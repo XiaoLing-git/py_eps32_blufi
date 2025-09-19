@@ -15,6 +15,14 @@ DH_P = (
 class BlufiCrypto:
     """"""
 
+    __slots__ = (
+        "p",
+        "g",
+        "y",
+        "private_Key",
+        "public_Key",
+    )
+
     def __init__(self) -> None:
         """"""
         self.p = int(DH_P, 0)

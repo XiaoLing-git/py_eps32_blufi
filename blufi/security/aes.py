@@ -10,6 +10,14 @@ from cryptography.utils import Buffer
 class BlufiAES(object):
     """AES/CFB/NoPadding"""
 
+    __slots__ = (
+        "key",
+        "iv",
+        "cipher",
+        "encryptor",
+        "decryptor",
+    )
+
     def __init__(self, key: Buffer, iv: Buffer) -> None:
         """"""
         self.key = key
