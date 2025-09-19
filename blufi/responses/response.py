@@ -25,18 +25,12 @@ class BlufiResponse:
     def parser(self) -> None:
         """parse"""
         self.assert_status()
-        print(self.pocket_type)
-        print(self.frame_control)
-        print(self.sn)
-        print(self.data_length)
-        print(self.data)
 
     def assert_status(self) -> None:
         """assert status"""
         if self.pocket_type.func_code is DataAddress.ERROR:
             data = int.from_bytes(bytes.fromhex(self.__content[8:10]), byteorder="little")
             error_code = ErrorCode.map_obj(data)
-            print(self.pocket_type.func_code)
             raise ParseResponseException(error_code.name)
 
     @property

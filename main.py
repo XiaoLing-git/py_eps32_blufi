@@ -5,8 +5,8 @@ import logging
 from blufi.driver.async_write_read import AsyncBlufiWriteRead
 from blufi.models.base_models import TypeField, ControlAddress, Encryption, CrcCheck, Direction, Ack, Sector_Data, \
     DataAddress
-from blufi.models.commands import ControlCommandWithData, ControlCommand, PocketType, FrameControl
-from blufi.models.response import BlufiResponse
+from blufi.models.commands import ControlCommand, PocketType, FrameControl
+from blufi.responses.response import BlufiResponse
 from blufi.serial_number import SerialNumber
 
 logging.basicConfig(
