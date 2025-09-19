@@ -170,8 +170,7 @@ class AsyncBlufiWriteRead(AsyncBlufiConnection):
         :param data:
         :return:
         """
-
-        await self.write(self.__cmd, start_notify=True)
+        await self.write(data, start_notify=True)
         await self.read()
 
         if self.__response is None:

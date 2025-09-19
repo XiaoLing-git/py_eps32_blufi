@@ -94,6 +94,10 @@ class BaseDataModels(BaseModel):  # type: ignore[misc]
 class ControlCommand(BaseDataModels):
     """Control Command"""
 
+    def __str__(self) -> str:
+        """__str__"""
+        return f"{self.pocket_type.hex()}{self.frame_control.hex()}{self.sn}{self.data_length_hex()}{self.crc}".lower()
+
 
 class ControlCommandWithData(BaseDataModels):
     """Control Command With Data"""

@@ -3,6 +3,8 @@ import asyncio
 import logging
 
 from blufi.driver.async_write_read import AsyncBlufiWriteRead
+from blufi.models.base_models import TypeField, ControlAddress, Encryption, CrcCheck, Direction, Ack, Sector_Data
+from blufi.models.commands import ControlCommandWithData, ControlCommand, PocketType, FrameControl
 from blufi.serial_number import SerialNumber
 
 logging.basicConfig(
@@ -12,19 +14,30 @@ logging.basicConfig(
 )
 
 async def fun():
-    ble = AsyncBlufiWriteRead(device_address="8CBFEA8355DE")
-    # await ble.async_connect()
-    await ble.async_connect()
-    # await ble.write("123456")
-    # await ble.read()
-    await ble.async_read_after_write("123456")
+    ble = AsyncBlufiWriteRead(device_address="8CBFEA852D7E")
 
-    await ble.async_read_after_write("456789")
+    await ble.async_connect()
+
+    bc = ControlCommand(
+        pocket_type=PocketType(
+            type_field=TypeField.Control,
+            func_code=ControlAddress.GET_VERSION),
+
+        frame_control=FrameControl(
+            encryption=Encryption.disable,
+            crc_check=CrcCheck.enable,
+            direction=Direction.device_to_esp,
+            ack=Ack.enable,
+            sector_Data=Sector_Data.disable,
+        ),
+        data_length=3
+    )
+    print(bc)
+    await ble.async_read_after_write(str(bc))
+
 
     await ble.async_disconnect()
     # await ble.async_disconnect()
 
 if __name__ == "__main__":
-    # asyncio.run(fun())
-    for i in range(100):
-        print(SerialNumber().obj)
+    asyncio.run(fun())
