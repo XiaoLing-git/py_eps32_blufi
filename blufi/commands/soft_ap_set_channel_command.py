@@ -6,8 +6,8 @@ from ..serial_number import SerialNumber
 from ..utils import assert_hex_str
 
 
-class SoftApMaxConnectionCommand:
-    """SoftApMaxConnectionCommand"""
+class SoftApSetChannelCommand:
+    """SoftApSetChannelCommand"""
 
     __slots__ = ("__cmd",)
 
@@ -21,9 +21,9 @@ class SoftApMaxConnectionCommand:
         sector_data: Sector_Data = Sector_Data.disable,
     ) -> None:
         """init."""
-        assert 0 < count < 5
+        assert 0 < count < 15
         self.__cmd = ControlCommandWithData(
-            pocket_type=PocketType(type_field=TypeField.Data, func_code=DataAddress.SOFTAP_MAX_CONNECTION_COUNT),
+            pocket_type=PocketType(type_field=TypeField.Data, func_code=DataAddress.SOFTAP_CHANNEL),
             frame_control=FrameControl(
                 encryption=encryption,
                 crc_check=crc_check,
