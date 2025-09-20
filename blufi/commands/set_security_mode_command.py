@@ -17,6 +17,8 @@ from ..serial_number import SerialNumber
 class SetSecurityModeCommand:
     """SetSecurityModeCommand"""
 
+    __slots__ = ("__cmd",)
+
     def __init__(
         self,
         encryption: Encryption = Encryption.disable,
