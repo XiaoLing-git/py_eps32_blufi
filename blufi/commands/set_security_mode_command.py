@@ -32,7 +32,7 @@ class SetSecurityModeCommand:
         """init."""
 
         self.__cmd = ControlCommandWithData(
-            pocket_type=PocketType(type_field=TypeField.Control, func_code=ControlAddress.ACK),
+            pocket_type=PocketType(type_field=TypeField.Control, func_code=ControlAddress.SET_SEC_MODE),
             frame_control=FrameControl(
                 encryption=encryption,
                 crc_check=crc_check,
