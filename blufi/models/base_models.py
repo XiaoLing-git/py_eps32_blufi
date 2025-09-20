@@ -241,6 +241,23 @@ class WifiOpMode(BlufiBaseEnum):
         raise EnumItemNotExistError(f"{cls.__name__} can't map {data:02X}")
 
 
+class WifiConnectState(BlufiBaseEnum):
+    """Wifi Connect State."""
+
+    Connected = 0x00
+    Unconnected = 0x01
+    Connecting = 0x02
+    Connecting_no_ip = 0x03
+
+    @classmethod
+    def map_obj(cls, data: int) -> WifiConnectState:
+        """map obj"""
+        for item in cls:
+            if item.value == data:
+                return item
+        raise EnumItemNotExistError(f"{cls.__name__} can't map {data:02X}")
+
+
 class SoftAPMode(BlufiBaseEnum):
     """base model for SoftAPMode."""
 

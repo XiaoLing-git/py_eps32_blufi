@@ -6,6 +6,7 @@ from blufi.driver.async_write_read import AsyncBlufiWriteRead
 from blufi.models.base_models import TypeField, ControlAddress, Encryption, CrcCheck, Direction, Ack, Sector_Data, \
     DataAddress
 from blufi.models.commands import ControlCommand, PocketType, FrameControl, ControlCommandWithData
+from blufi.responses.ack_parser import AckParser
 from blufi.responses.response import BlufiResponse, ResponseParser
 from blufi.serial_number import SerialNumber
 
@@ -23,10 +24,10 @@ async def fun():
 
 
         for n in range(10):
-            ack = ControlCommand(
+            ack = ControlCommandWithData(
                 pocket_type=PocketType(
                     type_field=TypeField.Control,
-                    func_code=ControlAddress.ACK),
+                    func_code=ControlAddress.GET_WIFI_STATUS),
                 frame_control=FrameControl(
                     encryption=Encryption.disable,
                     crc_check=CrcCheck.disable,
@@ -35,12 +36,14 @@ async def fun():
                     sector_Data=Sector_Data.disable,
                 ),
                 sn=SerialNumber().obj,
+                data="00"
             )
             print(ack)
-            print(f"Command: {ack.hex()}, sn ={ack.sn}")
+            print(f"Command: {ack.hex()}, sn ={ack.sn} length ={ack.data_length}")
             res = await ble.async_read_after_write(ack.hex())
             br = ResponseParser(res.hex())
-            assert br.parser().content == ack.sn
+            # if isinstance(br, AckParser):
+            br.parser()
             print(br)
             print("*"*100)
             await asyncio.sleep(0.1)

@@ -133,13 +133,9 @@ class ControlCommandWithData(BaseDataModels):
     def generate_crc(self) -> None:
         """generate crc"""
         self.crc = CRC16.calculate(
-            f"{self.pocket_type.hex()}{self.frame_control.hex()}{self.sn}{self.data_length_hex()}{self.data_hex()}"
+            f"{self.pocket_type.hex()}{self.frame_control.hex()}{self.sn}{self.data_length_hex()}{self.data}"
         )
         assert len(self.crc) == 4
-
-    def data_hex(self) -> str:
-        """hex data to str"""
-        return self.data.encode().hex()
 
     def hex(self) -> str:
         """hex"""
@@ -149,14 +145,14 @@ class ControlCommandWithData(BaseDataModels):
                 f"{self.frame_control.hex()}"
                 f"{self.sn}"
                 f"{self.data_length_hex()}"
-                f"{self.data_hex()}"
+                f"{self.data}"
             ).lower()
         return (
             f"{self.pocket_type.hex()}"
             f"{self.frame_control.hex()}"
             f"{self.sn}"
             f"{self.data_length_hex()}"
-            f"{self.data_hex()}{self.crc}"
+            f"{self.data}{self.crc}"
         ).lower()
 
     def __str__(self) -> str:
@@ -167,7 +163,7 @@ class ControlCommandWithData(BaseDataModels):
             f"frame_control = {self.frame_control}, "
             f"length = {self.data_length}, "
             f"sn = {self.sn}, "
-            f"data = {self.data_hex()}"
+            f"data = {self.data}"
             f")"
         )
 
