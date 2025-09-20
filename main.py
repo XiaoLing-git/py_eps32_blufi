@@ -5,7 +5,7 @@ import logging
 from blufi.driver.async_write_read import AsyncBlufiWriteRead
 from blufi.models.base_models import TypeField, ControlAddress, Encryption, CrcCheck, Direction, Ack, Sector_Data, \
     DataAddress
-from blufi.models.commands import ControlCommand, PocketType, FrameControl, ControlCommandWithData
+from blufi.models.commands_models import ControlCommand, PocketType, FrameControl, ControlCommandWithData
 from blufi.responses.ack_parser import AckParser
 from blufi.responses.response import BlufiResponse, ResponseParser
 from blufi.serial_number import SerialNumber
@@ -24,10 +24,10 @@ async def fun():
 
 
         for n in range(20):
-            ack = ControlCommand(
+            ack = ControlCommandWithData(
                 pocket_type=PocketType(
-                    type_field=TypeField.Control,
-                    func_code=ControlAddress.GET_VERSION),
+                    type_field=TypeField.Data,
+                    func_code=DataAddress.SOFTAP_AUTH_MODE),
                 frame_control=FrameControl(
                     encryption=Encryption.disable,
                     crc_check=CrcCheck.disable,
@@ -36,6 +36,7 @@ async def fun():
                     sector_Data=Sector_Data.disable,
                 ),
                 sn=SerialNumber().obj,
+                data="00"
             )
             print(ack)
             print(f"Command: {ack.hex()}, sn ={ack.sn} length ={ack.data_length}")
@@ -45,7 +46,7 @@ async def fun():
             br.parser()
             print(br)
             print("*"*100)
-            await asyncio.sleep(0.1)
+            await asyncio.sleep(1)
             # for i in range(5):
             #     res = await ble.read(clear=True)
             #     br = ResponseParser(res.hex())
