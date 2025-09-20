@@ -23,10 +23,10 @@ async def fun():
 
 
         for n in range(10):
-            ack = ControlCommandWithData(
+            ack = ControlCommand(
                 pocket_type=PocketType(
                     type_field=TypeField.Control,
-                    func_code=ControlAddress.SET_SEC_MODE),
+                    func_code=ControlAddress.ACK),
                 frame_control=FrameControl(
                     encryption=Encryption.disable,
                     crc_check=CrcCheck.disable,
@@ -35,7 +35,6 @@ async def fun():
                     sector_Data=Sector_Data.disable,
                 ),
                 sn=SerialNumber().obj,
-                data="0000"
             )
             print(ack)
             print(f"Command: {ack.hex()}, sn ={ack.sn}")

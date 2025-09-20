@@ -93,14 +93,30 @@ class BaseDataModels(BaseModel):  # type: ignore[misc]
 class ControlCommand(BaseDataModels):
     """Control Command"""
 
+    def hex(self) -> str:
+        """hex"""
+        if self.frame_control.crc_check is CrcCheck.disable:
+            return (
+                f"{self.pocket_type.hex()}" f"{self.frame_control.hex()}" f"{self.sn}" f"{self.data_length_hex()}"
+            ).lower()
+        return (
+            f"{self.pocket_type.hex()}"
+            f"{self.frame_control.hex()}"
+            f"{self.sn}"
+            f"{self.data_length_hex()}"
+            f"{self.crc}"
+        ).lower()
+
     def __str__(self) -> str:
         """__str__"""
-        if self.frame_control.crc_check is CrcCheck.enable:
-            return (
-                f"{self.pocket_type.hex()}{self.frame_control.hex()}{self.sn}{self.data_length_hex()}{self.crc}".lower()
-            )
-        else:
-            return f"{self.pocket_type.hex()}{self.frame_control.hex()}{self.sn}{self.data_length_hex()}".lower()
+        return (
+            f"{self.__class__.__name__}("
+            f"pocket_type = {self.pocket_type}, "
+            f"frame_control = {self.frame_control}, "
+            f"length = {self.data_length}, "
+            f"sn = {self.sn}, "
+            f")"
+        )
 
 
 class ControlCommandWithData(BaseDataModels):
@@ -127,7 +143,7 @@ class ControlCommandWithData(BaseDataModels):
 
     def hex(self) -> str:
         """hex"""
-        if self.frame_control.crc_check is CrcCheck.enable:
+        if self.frame_control.crc_check is CrcCheck.disable:
             return (
                 f"{self.pocket_type.hex()}"
                 f"{self.frame_control.hex()}"
@@ -190,7 +206,7 @@ class ControlCommandWithLargeData(BaseDataModels):
 
     def hex(self) -> str:
         """hex"""
-        if self.frame_control.crc_check is CrcCheck.enable:
+        if self.frame_control.crc_check is CrcCheck.disable:
             return (
                 f"{self.pocket_type.hex()}"
                 f"{self.frame_control.hex()}"
