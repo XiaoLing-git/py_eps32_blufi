@@ -20,5 +20,4 @@ class SerialNumber:
         """obj"""
         self.serial_number = self.serial_number + 1  # type: ignore[has-type]
         self.serial_number = self.serial_number & 0xFF
-        print(int.to_bytes(self.serial_number, byteorder="little", length=1).hex())
         return int.to_bytes(self.serial_number, byteorder="little", length=1).hex()

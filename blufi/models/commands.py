@@ -125,8 +125,16 @@ class ControlCommandWithData(BaseDataModels):
         """hex data to str"""
         return self.data.encode().hex()
 
-    def __str__(self) -> str:
-        """__str__"""
+    def hex(self) -> str:
+        """hex"""
+        if self.frame_control.crc_check is CrcCheck.enable:
+            return (
+                f"{self.pocket_type.hex()}"
+                f"{self.frame_control.hex()}"
+                f"{self.sn}"
+                f"{self.data_length_hex()}"
+                f"{self.data_hex()}"
+            ).lower()
         return (
             f"{self.pocket_type.hex()}"
             f"{self.frame_control.hex()}"
@@ -134,6 +142,18 @@ class ControlCommandWithData(BaseDataModels):
             f"{self.data_length_hex()}"
             f"{self.data_hex()}{self.crc}"
         ).lower()
+
+    def __str__(self) -> str:
+        """__str__"""
+        return (
+            f"{self.__class__.__name__}("
+            f"pocket_type = {self.pocket_type}, "
+            f"frame_control = {self.frame_control}, "
+            f"length = {self.data_length}, "
+            f"sn = {self.sn}, "
+            f"data = {self.data_hex()}"
+            f")"
+        )
 
 
 class ControlCommandWithLargeData(BaseDataModels):
@@ -168,21 +188,38 @@ class ControlCommandWithLargeData(BaseDataModels):
         """hex data length to str"""
         return int.to_bytes(self.data_length, byteorder="little", length=1).hex()
 
-    def __str__(self) -> str:
-        """__str__"""
+    def hex(self) -> str:
+        """hex"""
+        if self.frame_control.crc_check is CrcCheck.enable:
+            return (
+                f"{self.pocket_type.hex()}"
+                f"{self.frame_control.hex()}"
+                f"{self.sn}"
+                f"{self.data_length_hex()}"
+                f"{self.remain_data_length_hex()}"
+                f"{self.data_hex()}"
+            ).lower()
         return (
             f"{self.pocket_type.hex()}"
             f"{self.frame_control.hex()}"
             f"{self.sn}"
             f"{self.data_length_hex()}"
             f"{self.remain_data_length_hex()}"
-            f"{self.data_hex()}"
-            f"{self.crc}"
+            f"{self.data_hex()}{self.crc}"
         ).lower()
 
-
-class BaseResponse(BaseDataModels):
-    """Base response"""
+    def __str__(self) -> str:
+        """__str__"""
+        return (
+            f"{self.__class__.__name__}("
+            f"pocket_type = {self.pocket_type}, "
+            f"frame_control = {self.frame_control}, "
+            f"length = {self.data_length}, "
+            f"sn = {self.sn}, "
+            f"remain = {self.remain_length}, "
+            f"data = {self.data_hex()}"
+            f")"
+        )
 
 
 if __name__ == "__main__":

@@ -29,13 +29,7 @@ class BlufiResponse:
     def __init__(self, content: str = "4904000100"):
         """BlufiResponse init"""
         self.__content = content
-
-    def assert_status(self) -> None:
-        """assert status"""
-        if self.pocket_type.func_code is DataAddress.ERROR:
-            data = int.from_bytes(bytes.fromhex(self.__content[8:10]), byteorder="little")
-            error_code = ErrorCode.map_obj(data)
-            raise ParseResponseException(error_code.name)
+        print("response: ", self.__content, self.data)
 
     @property
     def pocket_type(self) -> PocketType:
@@ -76,16 +70,36 @@ class BlufiResponse:
             return ""
         return self.__content[8 : (8 + 2 * self.data_length)]
 
+    def __str__(self) -> str:
+        """__str__"""
+        if self.data_length == 0:
+            return (
+                f"{self.__class__.__name__}("
+                f"pocket_type = {self.pocket_type}, "
+                f"frame_control = {self.frame_control}, "
+                f"length = {self.data_length}, "
+                f"sn = {self.sn}"
+                f")"
+            )
+        return (
+            f"{self.__class__.__name__}("
+            f"pocket_type = {self.pocket_type}, "
+            f"frame_control = {self.frame_control}, "
+            f"length = {self.data_length}, "
+            f"sn = {self.sn}, "
+            f"data = {self.data}"
+            f")"
+        )
+
 
 class ResponseParser(BlufiResponse):
     """Response Parser"""
 
     def parser(self) -> Any:
         """parse"""
-        self.assert_status()
         match self.pocket_type.func_code:
             case ControlAddress.ACK:
-                return AckParser(self.sn, self.data)
+                return AckParser(self.data)
             case ControlAddress.SET_SEC_MODE:
                 return SetSecurityModeParser(self.data)
             case ControlAddress.SET_OP_MODE:
