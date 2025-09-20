@@ -7,11 +7,6 @@ from .parser import Parser
 class SetSecurityModeParser(Parser):
     """Set Security Mode Parser"""
 
-    def __init__(self, data: str) -> None:
-        """init."""
-        super().__init__(data)
-        assert len(self.content) == 2
-
     @property
     def control(self) -> SecurityMode:
         """control"""

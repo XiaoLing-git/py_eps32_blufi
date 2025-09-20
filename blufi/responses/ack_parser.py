@@ -10,8 +10,6 @@ class AckParser(Parser):
         """init."""
         super().__init__(data)
         self.__sn = format_sn
-
-        assert len(self.content) == 2
         assert self.__sn == self.content
 
     def sn(self) -> str:
