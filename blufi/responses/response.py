@@ -15,6 +15,8 @@ from blufi.models.base_models import (
     TypeField,
 )
 from blufi.models.commands import FrameControl, PocketType
+from blufi.responses.ack_parser import AckParser
+from blufi.responses.set_sec_mode_parser import SetSecurityModeParser
 
 
 class BlufiResponse:
@@ -79,9 +81,9 @@ class ResponseParser(BlufiResponse):
         self.assert_status()
         match self.pocket_type.func_code:
             case ControlAddress.ACK:
-                return self.data
+                return AckParser(self.sn, self.data)
             case ControlAddress.SET_SEC_MODE:
-                return None
+                return SetSecurityModeParser(self.data)
             case ControlAddress.SET_OP_MODE:
                 return None
             case ControlAddress.CONNECT_WIFI:

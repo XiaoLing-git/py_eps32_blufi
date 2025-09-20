@@ -215,6 +215,14 @@ class SecurityMode(BlufiBaseEnum):
     No_Checksum_Encryption = 0x02
     Checksum_Encryption = 0x03
 
+    @classmethod
+    def map_obj(cls, data: int) -> SecurityMode:
+        """map obj"""
+        for item in cls:
+            if item.value == data:
+                return item
+        raise EnumItemNotExistError(f"{cls.__name__} can't map {data:02X}")
+
 
 class WifiOpMode(BlufiBaseEnum):
     """base model for WifiOpMode."""

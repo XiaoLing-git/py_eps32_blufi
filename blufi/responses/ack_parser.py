@@ -11,6 +11,9 @@ class AckParser(Parser):
         super().__init__(data)
         self.__sn = format_sn
 
-    def assert_sn(self) -> None:
-        """assert sn"""
+        assert len(self.content) == 2
         assert self.__sn == self.content
+
+    def sn(self) -> str:
+        """sn"""
+        return self.__sn
