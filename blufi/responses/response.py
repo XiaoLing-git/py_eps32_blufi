@@ -17,6 +17,7 @@ from blufi.models.base_models import (
 from blufi.models.commands import FrameControl, PocketType
 from blufi.responses.ack_parser import AckParser
 from blufi.responses.de_authenticate_parser import DeAuthenticateParser
+from blufi.responses.error_parser import ErrorParser
 from blufi.responses.negotiation_parser import NegotiationParser
 from blufi.responses.set_op_mode_parser import SetWifiOpModeParser
 from blufi.responses.set_sec_mode_parser import SetSecurityModeParser
@@ -140,7 +141,7 @@ class ResponseParser(BlufiResponse):
             case DataAddress.WIFI_LIST:
                 return None
             case DataAddress.ERROR:
-                return None
+                return ErrorParser(self.data)
             case DataAddress.CUSTOM_DATA:
                 return None
             case DataAddress.WIFI_STA_MAX_CONN_RETRY:
