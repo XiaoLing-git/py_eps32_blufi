@@ -16,6 +16,8 @@ from blufi.models.base_models import (
 )
 from blufi.models.commands import FrameControl, PocketType
 from blufi.responses.ack_parser import AckParser
+from blufi.responses.de_authenticate_parser import DeAuthenticateParser
+from blufi.responses.set_op_mode_parser import SetWifiOpModeParser
 from blufi.responses.set_sec_mode_parser import SetSecurityModeParser
 
 
@@ -85,13 +87,13 @@ class ResponseParser(BlufiResponse):
             case ControlAddress.SET_SEC_MODE:
                 return SetSecurityModeParser(self.data)
             case ControlAddress.SET_OP_MODE:
-                return None
+                return SetWifiOpModeParser(self.data)
             case ControlAddress.CONNECT_WIFI:
                 return None
             case ControlAddress.GET_WIFI_STATUS:
                 return None
             case ControlAddress.DEAUTHENTICATE:
-                return None
+                return DeAuthenticateParser(self.data, self.data_length)
             case ControlAddress.GET_VERSION:
                 return None
             case ControlAddress.CLOSE_CONNECTION:
