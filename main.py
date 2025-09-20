@@ -23,11 +23,11 @@ async def fun():
         await ble.async_connect()
 
 
-        for n in range(10):
-            ack = ControlCommandWithData(
+        for n in range(20):
+            ack = ControlCommand(
                 pocket_type=PocketType(
                     type_field=TypeField.Control,
-                    func_code=ControlAddress.GET_WIFI_STATUS),
+                    func_code=ControlAddress.GET_VERSION),
                 frame_control=FrameControl(
                     encryption=Encryption.disable,
                     crc_check=CrcCheck.disable,
@@ -36,7 +36,6 @@ async def fun():
                     sector_Data=Sector_Data.disable,
                 ),
                 sn=SerialNumber().obj,
-                data="00"
             )
             print(ack)
             print(f"Command: {ack.hex()}, sn ={ack.sn} length ={ack.data_length}")
