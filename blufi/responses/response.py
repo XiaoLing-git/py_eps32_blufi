@@ -28,10 +28,10 @@ from blufi.responses.wifi_connect_state_parser import WifiConnectStateParser
 class BlufiResponse:
     """Blufi Response"""
 
-    def __init__(self, content: str = "4904000100"):
+    def __init__(self, content: str):
         """BlufiResponse init"""
         self.__content = content
-        print("response: ", self.__content, self.data)
+        # print("response: ", self.__content, self.data)
 
     @property
     def pocket_type(self) -> PocketType:
@@ -70,7 +70,30 @@ class BlufiResponse:
         """data"""
         if self.data_length == 0:
             return ""
-        return self.__content[8 : (8 + 2 * self.data_length)]
+        else:
+            if self.frame_control.crc_check is CrcCheck.enable:
+                temp_data = self.__content[8:-4]
+                if self.data_length == int(len(temp_data) / 2):
+                    return temp_data
+                else:
+                    return temp_data[2:]
+            else:
+                temp_data = self.__content[8:]
+                if self.data_length == int(len(temp_data) / 2):
+                    return temp_data
+                else:
+                    return temp_data[2:]
+
+    def insert_data(self, data: str) -> None:
+        """"""
+        self.__content = f"{self.__content[:8]}{data}{self.__content[8:]}"
+
+    def is_vector(self) -> bool:
+        """is_vector"""
+        if self.frame_control.sector_Data is Sector_Data.enable:
+            return True
+        else:
+            return False
 
     def __str__(self) -> str:
         """__str__"""
@@ -94,86 +117,76 @@ class BlufiResponse:
         )
 
 
-class ResponseParser(BlufiResponse):
-    """Response Parser"""
-
-    def parser(self) -> Any:
-        """parse"""
-        match self.pocket_type.func_code:
-            case ControlAddress.ACK:
-                return AckParser(self.data)
-            case ControlAddress.SET_SEC_MODE:
-                return SetSecurityModeParser(self.data)
-            case ControlAddress.SET_OP_MODE:
-                return SetWifiOpModeParser(self.data)
-            case ControlAddress.CONNECT_WIFI:
-                return DebugParser(self.data)
-            case ControlAddress.GET_WIFI_STATUS:
-                return DebugParser(self.data)
-            case ControlAddress.DEAUTHENTICATE:
-                return DeAuthenticateParser(self.data, self.data_length)
-            case ControlAddress.GET_VERSION:
-                return VersionParser(self.data)
-            case ControlAddress.CLOSE_CONNECTION:
-                return DebugParser(self.data)
-            case ControlAddress.GET_WIFI_LIST:
-                return DebugParser(self.data)
-
-            case DataAddress.NEG:
-                return NegotiationParser(self.data, self.data_length)
-            case DataAddress.STA_WIFI_BSSID:
-                return DebugParser(self.data)
-            case DataAddress.STA_WIFI_SSID:
-                return DebugParser(self.data)
-            case DataAddress.STA_WIFI_PASSWORD:
-                return DebugParser(self.data)
-            case DataAddress.SOFTAP_WIFI_SSID:
-                return DebugParser(self.data)
-            case DataAddress.SOFTAP_WIFI_PASSWORD:
-                return DebugParser(self.data)
-            case DataAddress.SOFTAP_MAX_CONNECTION_COUNT:
-                return DebugParser(self.data)
-            case DataAddress.SOFTAP_AUTH_MODE:
-                return DebugParser(self.data)
-            case DataAddress.SOFTAP_CHANNEL:
-                return DebugParser(self.data)
-
-            case DataAddress.USERNAME:
-                return DebugParser(self.data)
-            case DataAddress.CA_CERTIFICATION:
-                return DebugParser(self.data)
-            case DataAddress.CLIENT_CERTIFICATION:
-                return DebugParser(self.data)
-            case DataAddress.SERVER_CERTIFICATION:
-                return DebugParser(self.data)
-            case DataAddress.CLIENT_PRIVATE_KEY:
-                return DebugParser(self.data)
-            case DataAddress.SERVER_PRIVATE_KEY:
-                return DebugParser(self.data)
-            case DataAddress.WIFI_CONNECTION_STATE:
-                return WifiConnectStateParser(self.data)
-            case DataAddress.VERSION:
-                return VersionParser(self.data)
-            case DataAddress.WIFI_LIST:
-                return DebugParser(self.data)
-            case DataAddress.ERROR:
-                return ErrorParser(self.data)
-            case DataAddress.CUSTOM_DATA:
-                return CustomDataParser(self.data)
-            case DataAddress.WIFI_STA_MAX_CONN_RETRY:
-                return DebugParser(self.data)
-            case DataAddress.WIFI_STA_CONN_END_REASON:
-                return DebugParser(self.data)
-            case DataAddress.WIFI_STA_CONN_RSSI:
-                return DebugParser(self.data)
-        return None
-
-
-if __name__ == "__main__":
-    res = ResponseParser()
-    print(res.pocket_type)
-    print(res.frame_control)
-    print(res.data_length)
-    print(res.sn)
-    print(res.data)
-    res.parser()
+# class ResponseParser(BlufiResponse):
+#     """Response Parser"""
+#
+#     def parser(self) -> Any:
+#         """parse"""
+#         match self.pocket_type.func_code:
+#             case ControlAddress.ACK:
+#                 return AckParser(self.data)
+#             case ControlAddress.SET_SEC_MODE:
+#                 return SetSecurityModeParser(self.data)
+#             case ControlAddress.SET_OP_MODE:
+#                 return SetWifiOpModeParser(self.data)
+#             case ControlAddress.CONNECT_WIFI:
+#                 return DebugParser(self.data)
+#             case ControlAddress.GET_WIFI_STATUS:
+#                 return DebugParser(self.data)
+#             case ControlAddress.DEAUTHENTICATE:
+#                 return DeAuthenticateParser(self.data, self.data_length)
+#             case ControlAddress.GET_VERSION:
+#                 return VersionParser(self.data)
+#             case ControlAddress.CLOSE_CONNECTION:
+#                 return DebugParser(self.data)
+#             case ControlAddress.GET_WIFI_LIST:
+#                 return DebugParser(self.data)
+#
+#             case DataAddress.NEG:
+#                 return NegotiationParser(self.data, self.data_length)
+#             case DataAddress.STA_WIFI_BSSID:
+#                 return DebugParser(self.data)
+#             case DataAddress.STA_WIFI_SSID:
+#                 return DebugParser(self.data)
+#             case DataAddress.STA_WIFI_PASSWORD:
+#                 return DebugParser(self.data)
+#             case DataAddress.SOFTAP_WIFI_SSID:
+#                 return DebugParser(self.data)
+#             case DataAddress.SOFTAP_WIFI_PASSWORD:
+#                 return DebugParser(self.data)
+#             case DataAddress.SOFTAP_MAX_CONNECTION_COUNT:
+#                 return DebugParser(self.data)
+#             case DataAddress.SOFTAP_AUTH_MODE:
+#                 return DebugParser(self.data)
+#             case DataAddress.SOFTAP_CHANNEL:
+#                 return DebugParser(self.data)
+#
+#             case DataAddress.USERNAME:
+#                 return DebugParser(self.data)
+#             case DataAddress.CA_CERTIFICATION:
+#                 return DebugParser(self.data)
+#             case DataAddress.CLIENT_CERTIFICATION:
+#                 return DebugParser(self.data)
+#             case DataAddress.SERVER_CERTIFICATION:
+#                 return DebugParser(self.data)
+#             case DataAddress.CLIENT_PRIVATE_KEY:
+#                 return DebugParser(self.data)
+#             case DataAddress.SERVER_PRIVATE_KEY:
+#                 return DebugParser(self.data)
+#             case DataAddress.WIFI_CONNECTION_STATE:
+#                 return WifiConnectStateParser(self.data)
+#             case DataAddress.VERSION:
+#                 return VersionParser(self.data)
+#             case DataAddress.WIFI_LIST:
+#                 return DebugParser(self.data)
+#             case DataAddress.ERROR:
+#                 return ErrorParser(self.data)
+#             case DataAddress.CUSTOM_DATA:
+#                 return CustomDataParser(self.data)
+#             case DataAddress.WIFI_STA_MAX_CONN_RETRY:
+#                 return DebugParser(self.data)
+#             case DataAddress.WIFI_STA_CONN_END_REASON:
+#                 return DebugParser(self.data)
+#             case DataAddress.WIFI_STA_CONN_RSSI:
+#                 return DebugParser(self.data)
+#         return None

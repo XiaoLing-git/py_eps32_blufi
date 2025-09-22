@@ -2,7 +2,9 @@
 import asyncio
 
 from blufi.commands import CustomDataCommand
+from blufi.driver.async_base_driver import AsyncBlufiBaseDriver
 from blufi.driver.async_write_read import AsyncBlufiWriteRead
+from blufi.responses.custom_data_parser import CustomDataParser
 from blufi.responses.response import ResponseParser
 
 
@@ -14,38 +16,42 @@ from blufi.responses.response import ResponseParser
 
 async def fun():
     try:
-        ble = AsyncBlufiWriteRead(device_address="8CBFEA852D7E",timeout=20)
+        ble = AsyncBlufiBaseDriver(device_address="8CBFEA852D7E",timeout=20)
 
         await ble.async_connect()
-
+        # for i in range(10):
+        ack = CustomDataCommand("wifitest")
+        res = await ble.async_read_large_data_after_write(ack)
+        # if isinstance(res, CustomDataParser):
+        #     print(res.content)
 
         # for n in range(10):
         #     ack =  CustomDataCommand("wifitest")
         #     print(ack)
-        #     print(f"Command: {ack}, sn ={ack.sn} length ={ack.data_length}")
+        #     # print(f"Command: {ack}, sn ={ack.sn} length ={ack.data_length}")
         #     res = await ble.async_read_after_write(str(ack))
-            # br = ResponseParser(res.hex())
-            # if isinstance(br, AckParser):
-            # br.parser()
-            # print(br)
-            # print("*"*100)
-            # await asyncio.sleep(3)
+        #     br = ResponseParser(res.hex())
+        #     # if isinstance(br, AckParser):
+        #     br.parser()
+        #     print(br)
+        #     print("*"*100)
+        #     await asyncio.sleep(3)
 
-        ack = CustomDataCommand("wifitest")
-        print(ack)
-        print(f"Command: {ack}, sn ={ack.sn} length ={ack.data_length}")
-        res = await ble.async_read_after_write(str(ack))
-        br = ResponseParser(res.hex())
-        # if isinstance(br, AckParser):
-        br.parser()
-        print(br)
+        # ack = CustomDataCommand("gss_test")
+        # print(ack)
+        # print(f"Command: {ack}, sn ={ack.sn} length ={ack.data_length}")
+        # res = await ble.async_read_after_write(str(ack))
+        # br = ResponseParser(res.hex())
+        # br.parser()
+        # print(br)
+        #
+        # for i in range(10):
+        #     res = await ble.read(clear=True)
+        #     br = ResponseParser(res.hex())
+        #     br.parser()
+        #     print(br)
 
-        for i in range(10):
-            res = await ble.read(clear=True)
-            br = ResponseParser(res.hex())
-            # if isinstance(br, AckParser):
-            br.parser()
-            print(br)
+
 
 
     except Exception as e:

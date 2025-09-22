@@ -61,6 +61,12 @@ class AsyncBlufiWriteRead(AsyncBlufiConnection):
         """async connect."""
         await super().async_connect()
         self.get_uuid()
+        await self._start_notify()
+
+    async def async_disconnect(self) -> None:
+        """"""
+        await self._stop_notify()
+        await super().async_disconnect()
 
     def get_device_services(self) -> dict[str, Any]:
         """
@@ -124,6 +130,18 @@ class AsyncBlufiWriteRead(AsyncBlufiConnection):
             logger.info("The device is not connected and you try to send a command.")
             raise AsyncBlufiConnectionError(f"Please make sure the device is connected when sending the command")
 
+    async def _start_notify(self) -> None:
+        try:
+            await self._client.start_notify(self.__notify_uuid, callback=self.__notification_handler)
+        except Exception as e:
+            raise AsyncBlufiWriteReadException(f"{self.address} {self.__notify_uuid} start_notify fail msg: {e}")
+
+    async def _stop_notify(self) -> None:
+        try:
+            await self._client.stop_notify(self.__notify_uuid)
+        except Exception as e:
+            raise AsyncBlufiReadException(f"{self.address} stop_notify fail: {e}")
+
     async def write(self, data: str, start_notify: bool = False) -> None:
         """
         write data to device
@@ -137,10 +155,7 @@ class AsyncBlufiWriteRead(AsyncBlufiConnection):
         logger.info(f"Clear Response: {self.__response}")
 
         if start_notify:
-            try:
-                await self._client.start_notify(self.__notify_uuid, callback=self.__notification_handler)
-            except Exception as e:
-                raise AsyncBlufiWriteReadException(f"{self.address} {self.__notify_uuid} start_notify fail msg: {e}")
+            await self._start_notify()
         try:
             logger.info(f"Write: {data}")
             await self._client.write_gatt_char(self.__write_uuid, bytes.fromhex(data))
@@ -159,11 +174,6 @@ class AsyncBlufiWriteRead(AsyncBlufiConnection):
             logger.info(f"Read : {response.hex()}")
         except Exception as e:
             raise AsyncBlufiReadException(f"{self.address} Get response fail {e}") from e
-
-        # try:
-        #     await self._client.stop_notify(self.__notify_uuid)
-        # except Exception as e:
-        #     raise AsyncBlufiReadException(f"{self.address} stop_notify fail: {e}")
 
         return response
 
@@ -213,3 +223,8 @@ class AsyncBlufiWriteRead(AsyncBlufiConnection):
             if time.time() - start_time > self.__timeout:
                 raise AsyncBlufiReadException(f"Get response timeout Timeout = {self.__timeout} s")
         return self.__response
+
+    @property
+    def timeout(self) -> float:
+        """"""
+        return self.__timeout
