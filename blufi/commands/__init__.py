@@ -31,7 +31,7 @@ from .wifi_sta_conn_conn_rssi_command import WifiStaConnRssiCommand
 from .wifi_sta_conn_end_reason_command import WifiStaConnEndReasonCommand
 from .wifi_sta_max_conn_retry_command import WifiStaMaxConnRetryCommand
 
-Commands_type = Union[
+Commands_Type = Union[
     AckCommand,
     BleDisconnectCommand,
     CACertificationCommand,
@@ -64,6 +64,7 @@ Commands_type = Union[
 
 
 __all__ = (
+    "Commands_Type",
     "AckCommand",
     "BleDisconnectCommand",
     "CACertificationCommand",

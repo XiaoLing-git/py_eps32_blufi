@@ -9,7 +9,7 @@ class VersionParser(Parser):
     def __init__(self, data: str) -> None:
         """init."""
         super().__init__(data)
-        assert len(self.content) == 6
+        assert len(self.content) == 4
 
     @property
     def major(self) -> int:

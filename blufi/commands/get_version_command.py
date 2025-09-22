@@ -19,7 +19,6 @@ class GetVersionCommand:
         sector_data: Sector_Data = Sector_Data.disable,
     ) -> None:
         """init."""
-
         self.__cmd = ControlCommand(
             pocket_type=PocketType(type_field=TypeField.Control, func_code=ControlAddress.GET_VERSION),
             frame_control=FrameControl(
@@ -31,6 +30,16 @@ class GetVersionCommand:
             ),
             sn=SerialNumber().obj,
         )
+
+    @property
+    def sn(self) -> str:
+        """SN"""
+        return self.__cmd.sn
+
+    @property
+    def data_length(self) -> int:
+        """data_length"""
+        return self.__cmd.data_length
 
     def __str__(self) -> str:
         """__str__"""

@@ -2,6 +2,7 @@
 import asyncio
 import logging
 
+from blufi.commands import GetVersionCommand
 from blufi.driver.async_write_read import AsyncBlufiWriteRead
 from blufi.models.base_models import TypeField, ControlAddress, Encryption, CrcCheck, Direction, Ack, Sector_Data, \
     DataAddress
@@ -23,109 +24,17 @@ async def fun():
         await ble.async_connect()
 
 
-        for n in range(20):
-            ack = ControlCommandWithData(
-                pocket_type=PocketType(
-                    type_field=TypeField.Data,
-                    func_code=DataAddress.SOFTAP_AUTH_MODE),
-                frame_control=FrameControl(
-                    encryption=Encryption.disable,
-                    crc_check=CrcCheck.disable,
-                    direction=Direction.device_to_esp,
-                    ack=Ack.enable,
-                    sector_Data=Sector_Data.disable,
-                ),
-                sn=SerialNumber().obj,
-                data="00"
-            )
+        for n in range(10):
+            ack =  GetVersionCommand()
             print(ack)
-            print(f"Command: {ack.hex()}, sn ={ack.sn} length ={ack.data_length}")
-            res = await ble.async_read_after_write(ack.hex())
+            print(f"Command: {ack}, sn ={ack.sn} length ={ack.data_length}")
+            res = await ble.async_read_after_write(str(ack))
             br = ResponseParser(res.hex())
             # if isinstance(br, AckParser):
             br.parser()
             print(br)
             print("*"*100)
             await asyncio.sleep(1)
-            # for i in range(5):
-            #     res = await ble.read(clear=True)
-            #     br = ResponseParser(res.hex())
-            #     br.parser()
-            #     print(br)
-            #     print("&" * 100)
-            # print("-"*100)
-
-
-
-
-        # bc = ControlCommand(
-        #     pocket_type=PocketType(
-        #         type_field=TypeField.Control,
-        #         func_code=ControlAddress.GET_VERSION),
-        #     frame_control=FrameControl(
-        #         encryption=Encryption.disable,
-        #         crc_check=CrcCheck.disable,
-        #         direction=Direction.device_to_esp,
-        #         ack=Ack.enable,
-        #         sector_Data=Sector_Data.disable,
-        #     ),
-        #     sn=SerialNumber().obj,
-        # )
-        # print(bc)
-        # print("*"*100)
-        # res = await ble.async_read_after_write(str(bc))
-        # br = ResponseParser(res.hex())
-        # br.parser()
-        # print(br)
-        # print("#"*100)
-        # if br.pocket_type.func_code is DataAddress.VERSION:
-        #     pass
-        # else:
-        #     for i in range(10):
-        #         res = await ble.read(clear=True)
-        #         br = ResponseParser(res.hex())
-        #         br.parser()
-        #         print(br)
-        #         print("*" * 100)
-        #         if br.pocket_type.func_code is DataAddress.VERSION:
-        #             break
-        #
-        # print("-"*100)
-        # bc = ControlCommand(
-        #     pocket_type=PocketType(
-        #         type_field=TypeField.Control,
-        #         func_code=ControlAddress.GET_VERSION),
-        #
-        #     frame_control=FrameControl(
-        #         encryption=Encryption.disable,
-        #         crc_check=CrcCheck.disable,
-        #         direction=Direction.device_to_esp,
-        #         ack=Ack.enable,
-        #         sector_Data=Sector_Data.disable,
-        #     ),
-        #     sn=SerialNumber().obj,
-        #
-        # )
-        # print(bc.pocket_type)
-        # print(bc.frame_control)
-        # print(bc.sn,"SN")
-        # print(bc)
-        # print("*" * 100)
-        # res = await ble.async_read_after_write(str(bc))
-        # br = ResponseParser(res.hex())
-        # br.parser()
-        # print("#" * 100)
-        # if br.pocket_type.func_code is DataAddress.VERSION:
-        #     pass
-        # else:
-        #     for i in range(10):
-        #         res = await ble.read(clear=True)
-        #         br = ResponseParser(res.hex())
-        #         br.parser()
-        #         print("*" * 100)
-        #         if br.pocket_type.func_code is DataAddress.VERSION:
-        #             break
-
     except Exception as e:
         raise e
     finally:
