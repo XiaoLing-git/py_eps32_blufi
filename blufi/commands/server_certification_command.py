@@ -6,8 +6,8 @@ from ..serial_number import SerialNumber
 from ..utils import assert_hex_str
 
 
-class ClientCertificationCommand:
-    """ClientCertificationCommand"""
+class ServerCertificationCommand:
+    """ServerCertificationCommand"""
 
     __slots__ = ("__cmd",)
 
@@ -23,7 +23,7 @@ class ClientCertificationCommand:
         """init."""
         assert_hex_str(content)
         self.__cmd = ControlCommandWithData(
-            pocket_type=PocketType(type_field=TypeField.Data, func_code=DataAddress.CLIENT_CERTIFICATION),
+            pocket_type=PocketType(type_field=TypeField.Data, func_code=DataAddress.SERVER_CERTIFICATION),
             frame_control=FrameControl(
                 encryption=encryption,
                 crc_check=crc_check,
