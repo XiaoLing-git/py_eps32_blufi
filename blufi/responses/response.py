@@ -15,6 +15,7 @@ from blufi.models.base_models import (
 )
 from blufi.models.commands_models import FrameControl, PocketType
 from blufi.responses.ack_parser import AckParser
+from blufi.responses.custom_data_parser import CustomDataParser
 from blufi.responses.de_authenticate_parser import DeAuthenticateParser
 from blufi.responses.error_parser import ErrorParser
 from blufi.responses.negotiation_parser import NegotiationParser
@@ -151,8 +152,6 @@ class ResponseParser(BlufiResponse):
             case DataAddress.SERVER_PRIVATE_KEY:
                 return DebugParser(self.data)
             case DataAddress.WIFI_CONNECTION_STATE:
-                p = WifiConnectStateParser(self.data)
-                print("WifiConnectStateParser", p.content, p.mode, p.state, p.device_count)
                 return WifiConnectStateParser(self.data)
             case DataAddress.VERSION:
                 return VersionParser(self.data)
@@ -161,7 +160,7 @@ class ResponseParser(BlufiResponse):
             case DataAddress.ERROR:
                 return ErrorParser(self.data)
             case DataAddress.CUSTOM_DATA:
-                return DebugParser(self.data)
+                return CustomDataParser(self.data)
             case DataAddress.WIFI_STA_MAX_CONN_RETRY:
                 return DebugParser(self.data)
             case DataAddress.WIFI_STA_CONN_END_REASON:

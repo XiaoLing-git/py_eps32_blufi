@@ -22,6 +22,7 @@ class CustomDataCommand:
     ) -> None:
         """init."""
         content = content.encode().hex()
+        print("hex:", content)
         assert_hex_str(content)
         self.__cmd = ControlCommandWithData(
             pocket_type=PocketType(type_field=TypeField.Data, func_code=DataAddress.CUSTOM_DATA),
