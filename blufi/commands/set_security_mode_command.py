@@ -21,13 +21,13 @@ class SetSecurityModeCommand:
 
     def __init__(
         self,
+        data_frame: SecurityMode = SecurityMode.No_Checksum_No_Encryption,
+        control_frame: SecurityMode = SecurityMode.No_Checksum_No_Encryption,
         encryption: Encryption = Encryption.disable,
         crc_check: CrcCheck = CrcCheck.disable,
         direction: Direction = Direction.device_to_esp,
         ack: Ack = Ack.enable,
         sector_data: Sector_Data = Sector_Data.disable,
-        data_frame: SecurityMode = SecurityMode.No_Checksum_No_Encryption,
-        control_frame: SecurityMode = SecurityMode.No_Checksum_No_Encryption,
     ) -> None:
         """init."""
 
@@ -50,6 +50,16 @@ class SetSecurityModeCommand:
         control_frame_value = control_frame.value & 0x0F
         value = data_frame_value | control_frame_value
         return int.to_bytes(value, byteorder="little", length=1).hex()
+
+    @property
+    def sn(self) -> str:
+        """SN"""
+        return self.__cmd.sn
+
+    @property
+    def data_length(self) -> int:
+        """data_length"""
+        return self.__cmd.data_length
 
     def __str__(self) -> str:
         """__str__"""

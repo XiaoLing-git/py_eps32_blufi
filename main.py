@@ -2,10 +2,10 @@
 import asyncio
 import logging
 
-from blufi.commands import GetVersionCommand
+from blufi.commands import GetVersionCommand, SetSecurityModeCommand
 from blufi.driver.async_write_read import AsyncBlufiWriteRead
 from blufi.models.base_models import TypeField, ControlAddress, Encryption, CrcCheck, Direction, Ack, Sector_Data, \
-    DataAddress
+    DataAddress, SecurityMode
 from blufi.models.commands_models import ControlCommand, PocketType, FrameControl, ControlCommandWithData
 from blufi.responses.ack_parser import AckParser
 from blufi.responses.response import BlufiResponse, ResponseParser
@@ -24,8 +24,8 @@ async def fun():
         await ble.async_connect()
 
 
-        for n in range(10):
-            ack =  GetVersionCommand()
+        for n in range(20):
+            ack =  SetSecurityModeCommand(data_frame=SecurityMode.Checksum_Encryption)
             print(ack)
             print(f"Command: {ack}, sn ={ack.sn} length ={ack.data_length}")
             res = await ble.async_read_after_write(str(ack))
@@ -34,7 +34,7 @@ async def fun():
             br.parser()
             print(br)
             print("*"*100)
-            await asyncio.sleep(1)
+            await asyncio.sleep(0.2)
     except Exception as e:
         raise e
     finally:
