@@ -21,6 +21,7 @@ class CustomDataCommand:
         sector_data: Sector_Data = Sector_Data.disable,
     ) -> None:
         """init."""
+        content = content.encode().hex()
         assert_hex_str(content)
         self.__cmd = ControlCommandWithData(
             pocket_type=PocketType(type_field=TypeField.Data, func_code=DataAddress.CUSTOM_DATA),
@@ -34,6 +35,17 @@ class CustomDataCommand:
             sn=SerialNumber().obj,
             data=content,
         )
+        print(self.__cmd)
+
+    @property
+    def sn(self) -> str:
+        """SN"""
+        return self.__cmd.sn
+
+    @property
+    def data_length(self) -> int:
+        """data_length"""
+        return self.__cmd.data_length
 
     def __str__(self) -> str:
         """__str__"""

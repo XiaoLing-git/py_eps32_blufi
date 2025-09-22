@@ -2,7 +2,7 @@
 import asyncio
 import logging
 
-from blufi.commands import GetVersionCommand, SetSecurityModeCommand, SetWifiOpModeCommand
+from blufi.commands import GetVersionCommand, SetSecurityModeCommand, SetWifiOpModeCommand, CustomDataCommand
 from blufi.driver.async_write_read import AsyncBlufiWriteRead
 from blufi.models.base_models import TypeField, ControlAddress, Encryption, CrcCheck, Direction, Ack, Sector_Data, \
     DataAddress, SecurityMode
@@ -24,17 +24,35 @@ async def fun():
         await ble.async_connect()
 
 
-        for n in range(20):
-            ack =  SetWifiOpModeCommand()
-            print(ack)
-            print(f"Command: {ack}, sn ={ack.sn} length ={ack.data_length}")
-            res = await ble.async_read_after_write(str(ack))
+        # for n in range(20):
+        #     ack =  CustomDataCommand("gss_test")
+        #     print(ack)
+        #     print(f"Command: {ack}, sn ={ack.sn} length ={ack.data_length}")
+        #     res = await ble.async_read_after_write(str(ack))
+        #     br = ResponseParser(res.hex())
+        #     # if isinstance(br, AckParser):
+        #     br.parser()
+        #     print(br)
+        #     print("*"*100)
+        #     await asyncio.sleep(0.2)
+
+        ack = CustomDataCommand("gss_test")
+        print(ack)
+        print(f"Command: {ack}, sn ={ack.sn} length ={ack.data_length}")
+        res = await ble.async_read_after_write(str(ack))
+        br = ResponseParser(res.hex())
+        # if isinstance(br, AckParser):
+        br.parser()
+        print(br)
+
+        for i in range(10):
+            res = await ble.read(clear=True)
             br = ResponseParser(res.hex())
             # if isinstance(br, AckParser):
             br.parser()
             print(br)
-            print("*"*100)
-            await asyncio.sleep(0.2)
+
+
     except Exception as e:
         raise e
     finally:

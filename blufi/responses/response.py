@@ -10,7 +10,6 @@ from blufi.models.base_models import (
     DataAddress,
     Direction,
     Encryption,
-    ErrorCode,
     Sector_Data,
     TypeField,
 )
