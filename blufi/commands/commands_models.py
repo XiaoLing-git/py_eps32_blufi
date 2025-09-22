@@ -177,7 +177,7 @@ class ControlCommandWithLargeData(BaseDataModels):
     def model_post_init(self, context: Any, /) -> None:
         """model_post_init"""
         assert self.frame_control.sector_Data is Sector_Data.enable
-        self.data_length = len(self.data) - 2
+        self.data_length = int((len(self.data) - 2) / 2)
         self.generate_crc()
 
     def generate_crc(self) -> None:

@@ -1,7 +1,8 @@
 """"""
 
+from blufi.commands.commands_models import ControlCommand, FrameControl, PocketType
+
 from ..models.base_models import Ack, ControlAddress, CrcCheck, Direction, Encryption, Sector_Data, TypeField
-from ..models.commands_models import ControlCommand, FrameControl, PocketType
 from ..serial_number import SerialNumber
 
 

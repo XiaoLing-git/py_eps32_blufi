@@ -2,7 +2,7 @@
 
 from typing import Any
 
-from blufi.errors import ParseResponseException
+from blufi.commands.commands_models import FrameControl, PocketType
 from blufi.models.base_models import (
     Ack,
     ControlAddress,
@@ -13,13 +13,12 @@ from blufi.models.base_models import (
     Sector_Data,
     TypeField,
 )
-from blufi.models.commands_models import FrameControl, PocketType
 from blufi.responses.ack_parser import AckParser
 from blufi.responses.custom_data_parser import CustomDataParser
 from blufi.responses.de_authenticate_parser import DeAuthenticateParser
 from blufi.responses.error_parser import ErrorParser
 from blufi.responses.negotiation_parser import NegotiationParser
-from blufi.responses.parser import DebugParser, Parser
+from blufi.responses.parser import DebugParser
 from blufi.responses.set_op_mode_parser import SetWifiOpModeParser
 from blufi.responses.set_sec_mode_parser import SetSecurityModeParser
 from blufi.responses.version_parser import VersionParser

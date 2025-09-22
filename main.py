@@ -1,16 +1,10 @@
 """Main function entry, mainly used for debugging."""
 import asyncio
-import logging
-import time
 
-from blufi.commands import GetVersionCommand, SetSecurityModeCommand, SetWifiOpModeCommand, CustomDataCommand
+from blufi.commands import CustomDataCommand
 from blufi.driver.async_write_read import AsyncBlufiWriteRead
-from blufi.models.base_models import TypeField, ControlAddress, Encryption, CrcCheck, Direction, Ack, Sector_Data, \
-    DataAddress, SecurityMode
-from blufi.models.commands_models import ControlCommand, PocketType, FrameControl, ControlCommandWithData
-from blufi.responses.ack_parser import AckParser
-from blufi.responses.response import BlufiResponse, ResponseParser
-from blufi.serial_number import SerialNumber
+from blufi.responses.response import ResponseParser
+
 
 # logging.basicConfig(
 #     level=logging.INFO,  # 核心：设置最低日志级别为DEBUG
