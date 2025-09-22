@@ -2,7 +2,7 @@
 import asyncio
 import logging
 
-from blufi.commands import GetVersionCommand, SetSecurityModeCommand
+from blufi.commands import GetVersionCommand, SetSecurityModeCommand, SetWifiOpModeCommand
 from blufi.driver.async_write_read import AsyncBlufiWriteRead
 from blufi.models.base_models import TypeField, ControlAddress, Encryption, CrcCheck, Direction, Ack, Sector_Data, \
     DataAddress, SecurityMode
@@ -25,7 +25,7 @@ async def fun():
 
 
         for n in range(20):
-            ack =  SetSecurityModeCommand(data_frame=SecurityMode.Checksum_Encryption)
+            ack =  SetWifiOpModeCommand()
             print(ack)
             print(f"Command: {ack}, sn ={ack.sn} length ={ack.data_length}")
             res = await ble.async_read_after_write(str(ack))

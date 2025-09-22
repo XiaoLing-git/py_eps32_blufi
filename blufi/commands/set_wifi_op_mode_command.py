@@ -21,7 +21,7 @@ class SetWifiOpModeCommand:
 
     def __init__(
         self,
-        wifi_mode: WifiOpMode,
+        wifi_mode: WifiOpMode = WifiOpMode.NULL,
         encryption: Encryption = Encryption.disable,
         crc_check: CrcCheck = CrcCheck.disable,
         direction: Direction = Direction.device_to_esp,
@@ -42,6 +42,16 @@ class SetWifiOpModeCommand:
             sn=SerialNumber().obj,
             data=int.to_bytes(wifi_mode.value, byteorder="little", length=1).hex(),
         )
+
+    @property
+    def sn(self) -> str:
+        """SN"""
+        return self.__cmd.sn
+
+    @property
+    def data_length(self) -> int:
+        """data_length"""
+        return self.__cmd.data_length
 
     def __str__(self) -> str:
         """__str__"""
