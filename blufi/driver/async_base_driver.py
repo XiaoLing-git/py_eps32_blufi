@@ -90,13 +90,14 @@ class AsyncBlufiBaseDriver(AsyncBlufiWriteRead):
         value = ControlCommandWithData(
             pocket_type=sector.pocket_type, frame_control=sector.frame_control, sn=sector.sn, data=content
         ).hex()
-        print(bytes.fromhex(content).decode())
         self._set_response(value)
+        self.response_parser = BlufiResponse(value)
 
     async def async_send_command(self, cmd: Commands_Type) -> None:
         """async_send_command"""
         await self.write(str(cmd), clear_response=False)
 
-    def get_response(self) -> None:
+    def get_response(self) -> BlufiResponse:
         """get_response"""
-        pass
+        assert self.response_parser is not None
+        return self.response_parser

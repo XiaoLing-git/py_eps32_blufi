@@ -29,7 +29,7 @@ async def fun():
             # print(ack)
             await ble.async_send_command(ack)
 
-            await asyncio.sleep(0.5)
+            time.sleep(0.1)
             if ble.response_parser:
                 print(ble.response_parser.frame_control.sector_Data, ble.response)
 
@@ -39,10 +39,16 @@ async def fun():
         while True:
             if time.time() - start_time > 10:
                 break
-            await asyncio.sleep(0.5)
+            await asyncio.sleep(0.1)
             if ble.response_parser:
-                print(ble.response_parser.frame_control.sector_Data, ble.response)
+                print(ble.get_response().frame_control.sector_Data, bytes.fromhex(ble.get_response().data).decode())
 
+        start_time = time.time()
+        while True:
+            if time.time() - start_time > 5:
+                break
+            time.sleep(1)
+            print("hold")
 
         # for i in range(10):
         # ack = CustomDataCommand("wifitest")
