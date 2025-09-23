@@ -2,7 +2,8 @@
 import asyncio
 import time
 
-from blufi.commands import CustomDataCommand, AckCommand, GetVersionCommand, SetSecurityModeCommand, GetWifiListCommand
+from blufi.commands import CustomDataCommand, AckCommand, GetVersionCommand, SetSecurityModeCommand, GetWifiListCommand, \
+    GetWifiStatusCommand
 from blufi.driver.async_base_driver import AsyncBlufiBaseDriver
 from blufi.driver.async_write_read import AsyncBlufiWriteRead
 
@@ -32,7 +33,7 @@ async def fun():
                 print(ble.get_response().parser())
 
         print("-"*100)
-        cmd = GetWifiListCommand()
+        cmd = GetWifiStatusCommand()
         await ble.async_send_command(cmd)
         start_time = time.time()
         while True:
@@ -40,7 +41,7 @@ async def fun():
                 break
             await asyncio.sleep(0.1)
             if ble.response_parser:
-                print(ble.get_response().parser())
+                print(ble.get_response().pocket_type,ble.get_response().parser())
 
 
         # start_time = time.time()

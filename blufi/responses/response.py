@@ -17,6 +17,7 @@ from blufi.responses.ack_parser import AckParser
 from blufi.responses.custom_data_parser import CustomDataParser
 from blufi.responses.parser import Parser
 from blufi.responses.version_parser import VersionParser
+from blufi.responses.wifi_status_parser import WifiStatusParser
 
 
 class BlufiResponse:
@@ -108,5 +109,7 @@ class BlufiResponse:
                 return VersionParser(self.data)
             case DataAddress.CUSTOM_DATA:
                 return CustomDataParser(self.data)
+            case DataAddress.WIFI_CONNECTION_STATE:
+                return WifiStatusParser(self.data)
 
         return Parser(self.data)

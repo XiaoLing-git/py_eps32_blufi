@@ -266,3 +266,11 @@ class SoftAPMode(BlufiBaseEnum):
     WPA_PSK = 0x02
     WPA2_PSK = 0x03
     WPA_WPA2_PSK = 0x04
+
+    @classmethod
+    def map_obj(cls, data: int) -> SoftAPMode:
+        """map obj"""
+        for item in cls:
+            if item.value == data:
+                return item
+        raise EnumItemNotExistError(f"{cls.__name__} can't map {data:02X}")
