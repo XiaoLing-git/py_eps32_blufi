@@ -21,13 +21,16 @@ class CustomDataParser(Parser):
     def format(self) -> list[dict[str, str | int]]:
         """format"""
         result = []
-        content = self.content[1:-1].replace("},", "}")
-        for i in content.split("}"):
-            try:
-                temp = json.loads(i + "}")
-                result.append(temp)
-            except Exception:
-                pass
+        if "}," in self.content:
+            content = self.content[1:-1].replace("},", "}")
+            for i in content.split("}"):
+                try:
+                    temp = json.loads(i + "}")
+                    result.append(temp)
+                except Exception as e:
+                    print(e)
+        else:
+            result.append(self.content)
         return result
 
     def __str__(self) -> str:

@@ -27,17 +27,14 @@ class WifiStatusParser(Parser):
         return SoftAPMode.map_obj(int.from_bytes(bytes.fromhex(self.content[4:6]), byteorder="little"))
 
     @property
-    def info(self) -> str | None:
+    def info(self) -> bytes | None:
         """info"""
-        return self.content[6:] if len(self.content[6:]) > 0 else None
+        if len(self.content[6:]) > 0:
+            data = bytes.fromhex(self.content[6:])
+        else:
+            data = None
+        return data
 
     def __str__(self) -> str:
         """str"""
-        return (
-            f"{self.__class__.__name__}("
-            f"op_mode={self.op_mode}, "
-            f"soft_ap_status={self.soft_ap_status}, "
-            f"sta_status={self.sta_status}, "
-            f"info={self.info}, "
-            f"content={self.content})"
-        )
+        return f"{self.__class__.__name__}(op_mode={self.op_mode}, soft_ap_status={self.soft_ap_status}, sta_status={self.sta_status}, info={self.info!r})"

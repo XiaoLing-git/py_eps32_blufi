@@ -1,12 +1,14 @@
 """Main function entry, mainly used for debugging."""
 import asyncio
+import logging
 import time
 
 from blufi.commands import CustomDataCommand, AckCommand, GetVersionCommand, SetSecurityModeCommand, GetWifiListCommand, \
-    GetWifiStatusCommand
+    GetWifiStatusCommand, StaWifiSSIDCommand, StaWifiPasswordCommand, ConnectWifiCommand, DisconnectWifiCommand
 from blufi.driver.async_base_driver import AsyncBlufiBaseDriver
 from blufi.driver.async_write_read import AsyncBlufiWriteRead
 
+#
 # logging.basicConfig(
 #     level=logging.INFO,  # 核心：设置最低日志级别为DEBUG
 #     format='%(asctime)s %(name)s - %(levelname)s - %(message)s',  # 日志格式
@@ -15,7 +17,7 @@ from blufi.driver.async_write_read import AsyncBlufiWriteRead
 
 async def fun():
     try:
-        ble = AsyncBlufiBaseDriver(device_address="8CBFEA852D7E",timeout=20)
+        ble = AsyncBlufiBaseDriver(device_address="8CBFEA852D7E", timeout=20)
 
         await ble.async_connect()
 
@@ -32,8 +34,8 @@ async def fun():
             if ble.response_parser:
                 print(ble.get_response().parser())
 
-        print("-"*100)
-        cmd = GetWifiStatusCommand()
+        print("-" * 100)
+        cmd = CustomDataCommand(content="ado_test")
         await ble.async_send_command(cmd)
         start_time = time.time()
         while True:
@@ -41,8 +43,42 @@ async def fun():
                 break
             await asyncio.sleep(0.1)
             if ble.response_parser:
-                print(ble.get_response().pocket_type,ble.get_response().parser())
+                print(ble.get_response().pocket_type, ble.get_response().parser())
 
+        # print("-" * 100)
+        # cmd = StaWifiPasswordCommand(content="runucleverboy")
+        # await ble.async_send_command(cmd)
+        # start_time = time.time()
+        # while True:
+        #     if time.time() - start_time > 10:
+        #         break
+        #     await asyncio.sleep(0.1)
+        #     if ble.response_parser:
+        #         print(ble.get_response().pocket_type, ble.get_response().parser())
+        #
+        # print("-" * 100)
+        # cmd = ConnectWifiCommand()
+        # await ble.async_send_command(cmd)
+        # start_time = time.time()
+        # while True:
+        #     if time.time() - start_time > 10:
+        #         break
+        #     await asyncio.sleep(0.1)
+        #     if ble.response_parser:
+        #         p = ble.get_response()
+        #         print("@", p.pocket_type.func_code, p.parser())
+
+        # print("-" * 100)
+        # cmd = DisconnectWifiCommand()
+        # await ble.async_send_command(cmd)
+        # start_time = time.time()
+        # while True:
+        #     if time.time() - start_time > 10:
+        #         break
+        #     await asyncio.sleep(0.1)
+        #     if ble.response_parser:
+        #         p = ble.get_response()
+        #         print("@", p.pocket_type.func_code, p.parser())
 
         # start_time = time.time()
         # while True:
@@ -92,7 +128,10 @@ async def fun():
         await ble.async_disconnect()
     # await ble.async_disconnect()
 
+
 if __name__ == "__main__":
     asyncio.run(fun())
 
     "410401020103"
+    # content = b'\x02\x0bXiaomi_2ACD\x03\rrunucleverboy'
+    # print(content.decode())

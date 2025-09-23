@@ -10,7 +10,10 @@ from ..utils import assert_hex_str
 class StaWifiSSIDCommand:
     """StaWifiSSIDCommand"""
 
-    __slots__ = ("__cmd",)
+    __slots__ = (
+        "__cmd",
+        "__content",
+    )
 
     def __init__(
         self,
@@ -22,7 +25,7 @@ class StaWifiSSIDCommand:
         sector_data: Sector_Data = Sector_Data.disable,
     ) -> None:
         """init."""
-        assert_hex_str(content)
+        self.__content = content
         self.__cmd = ControlCommandWithData(
             pocket_type=PocketType(type_field=TypeField.Data, func_code=DataAddress.STA_WIFI_SSID),
             frame_control=FrameControl(
@@ -33,8 +36,15 @@ class StaWifiSSIDCommand:
                 sector_Data=sector_data,
             ),
             sn=SerialNumber().obj,
-            data=content,
+            data=self.ssid,
         )
+
+    @property
+    def ssid(self) -> str:
+        """ssid"""
+        data = self.__content.encode().hex()
+        assert_hex_str(data)
+        return data
 
     def __str__(self) -> str:
         """__str__"""

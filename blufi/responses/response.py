@@ -111,5 +111,5 @@ class BlufiResponse:
                 return CustomDataParser(self.data)
             case DataAddress.WIFI_CONNECTION_STATE:
                 return WifiStatusParser(self.data)
-
+        print("e", self.pocket_type.func_code)
         return Parser(self.data)
