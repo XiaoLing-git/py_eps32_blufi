@@ -25,3 +25,7 @@ class VersionParser(Parser):
     def version(self) -> str:
         """version"""
         return f"V{self.major}.{self.minor}"
+
+    def __str__(self) -> str:
+        """str"""
+        return f"{self.__class__.__name__}(" f"version={self.version}, " f"content={self.content})"

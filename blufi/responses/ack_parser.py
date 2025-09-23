@@ -7,6 +7,10 @@ class AckParser(Parser):
     """Ack Parser"""
 
     @property
-    def sn(self) -> str:
+    def response_sn(self) -> str:
         """sn"""
         return self.content
+
+    def __str__(self) -> str:
+        """str"""
+        return f"{self.__class__.__name__}(" f"response_sn={self.response_sn}, " f"content={self.content})"

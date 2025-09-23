@@ -31,7 +31,6 @@ class GetVersionCommand:
             ),
             sn=SerialNumber().obj,
         )
-        print(self.__cmd)
 
     @property
     def sn(self) -> str:

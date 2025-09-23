@@ -18,6 +18,11 @@ logger = logging.getLogger(__name__)
 class AsyncBlufiBaseDriver(AsyncBlufiWriteRead):
     """Async Blufi Base Driver"""
 
+    __slots__ = (
+        "response_parser",
+        "__read_server_flag",
+    )
+
     def __init__(self, device_address: str, timeout: float = 10) -> None:
         """init"""
         super().__init__(device_address, timeout)

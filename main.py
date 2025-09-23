@@ -2,11 +2,9 @@
 import asyncio
 import time
 
-from blufi.commands import CustomDataCommand, AckCommand
+from blufi.commands import CustomDataCommand, AckCommand, GetVersionCommand
 from blufi.driver.async_base_driver import AsyncBlufiBaseDriver
 from blufi.driver.async_write_read import AsyncBlufiWriteRead
-from blufi.responses.custom_data_parser import CustomDataParser
-
 
 # logging.basicConfig(
 #     level=logging.INFO,  # 核心：设置最低日志级别为DEBUG
@@ -25,15 +23,15 @@ async def fun():
             if time.time() - start_time > 3:
                 break
             # print(ble.response_parser)
-            ack = AckCommand()
+            ack = GetVersionCommand()
             # print(ack)
             await ble.async_send_command(ack)
 
             time.sleep(0.1)
             if ble.response_parser:
-                print(ble.response_parser.frame_control.sector_Data, ble.response)
+                print(ble.get_response().parser())
 
-        cmd = CustomDataCommand("wifitest")
+        cmd = CustomDataCommand("gss_test")
         await ble.async_send_command(cmd)
         start_time = time.time()
         while True:
