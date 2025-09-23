@@ -58,7 +58,7 @@ class BlufiResponse:
     @property
     def sn(self) -> str:
         """sn"""
-        return self.__content[6:8]
+        return self.__content[4:6]
 
     @property
     def data_length(self) -> int:
@@ -83,10 +83,6 @@ class BlufiResponse:
                     return temp_data
                 else:
                     return temp_data[2:]
-
-    def insert_data(self, data: str) -> None:
-        """"""
-        self.__content = f"{self.__content[:8]}{data}{self.__content[8:]}"
 
     def is_vector(self) -> bool:
         """is_vector"""

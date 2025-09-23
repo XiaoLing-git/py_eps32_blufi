@@ -60,7 +60,7 @@ class AsyncBlufiWriteRead(AsyncBlufiConnection):
     async def async_connect(self) -> None:
         """async connect."""
         await super().async_connect()
-        self.get_uuid()
+        self.__get_uuid()
         await self._start_notify()
 
     async def async_disconnect(self) -> None:
@@ -68,7 +68,7 @@ class AsyncBlufiWriteRead(AsyncBlufiConnection):
         await self._stop_notify()
         await super().async_disconnect()
 
-    def get_device_services(self) -> dict[str, Any]:
+    def __get_device_services(self) -> dict[str, Any]:
         """
         get device services
         :return:
@@ -87,12 +87,12 @@ class AsyncBlufiWriteRead(AsyncBlufiConnection):
             logger.info(msg)
             raise AsyncBlufiGetServiceException(msg) from e
 
-    def get_uuid(self) -> tuple[str | None, str | None]:
+    def __get_uuid(self) -> tuple[str | None, str | None]:
         """
         get device uuid
         :return:
         """
-        data = self.get_device_services()
+        data = self.__get_device_services()
         try:
             uuids = data.get("Vendor specific")
             if uuids is None:
@@ -142,34 +142,33 @@ class AsyncBlufiWriteRead(AsyncBlufiConnection):
         except Exception as e:
             raise AsyncBlufiReadException(f"{self.address} stop_notify fail: {e}")
 
-    async def write(self, data: str, start_notify: bool = False) -> None:
+    async def write(self, data: str, clear_response: bool = True) -> None:
         """
         write data to device
         :param data:
-        :param start_notify
+        :param clear_response:
         :return:
         """
         self.__cmd = data
-        self.__response = None
+        if clear_response:
+            self.__response = None
+            logger.info(f"Clear Response: {self.__response}")
 
-        logger.info(f"Clear Response: {self.__response}")
-
-        if start_notify:
-            await self._start_notify()
         try:
             logger.info(f"Write: {data}")
             await self._client.write_gatt_char(self.__write_uuid, bytes.fromhex(data))
         except Exception as e:
             raise AsyncBlufiWriteException(f"Device: {self.address} write_gatt_char fail: {e}") from e
 
-    async def read(self, clear: bool = False) -> bytearray:
+    async def read(self, clear_response: bool = True) -> bytearray:
         """
         read data from device
         :return:
         """
-        if clear:
+        if clear_response:
             self.__response = None
         try:
+
             response = await self.__read_until_timeout()
             logger.info(f"Read : {response.hex()}")
         except Exception as e:
@@ -184,26 +183,9 @@ class AsyncBlufiWriteRead(AsyncBlufiConnection):
         :return:
         """
         self.__cmd = data
-        self.__response = None
 
-        logger.info(f"Clear Response: {self.__response}")
-
-        try:
-            await self._client.start_notify(self.__notify_uuid, callback=self.__notification_handler)
-        except Exception as e:
-            raise AsyncBlufiWriteReadException(f"{self.address} {self.__notify_uuid} start_notify fail msg: {e}")
-
-        try:
-            logger.info(f"Write: {data}")
-            await self._client.write_gatt_char(self.__write_uuid, bytes.fromhex(data))
-        except Exception as e:
-            raise AsyncBlufiWriteException(f"Device: {self.address} write_gatt_char fail: {e}") from e
-
-        try:
-            response = await self.__read_until_timeout()
-            logger.info(f"Read : {response.hex()}")
-        except Exception as e:
-            raise AsyncBlufiReadException(f"{self.address} Get response fail {e}") from e
+        await self.write(data, clear_response=True)
+        await self.read(clear_response=False)
 
         if self.__response is None:
             raise AsyncBlufiWriteReadException("No response received")
@@ -223,6 +205,9 @@ class AsyncBlufiWriteRead(AsyncBlufiConnection):
             if time.time() - start_time > self.__timeout:
                 raise AsyncBlufiReadException(f"Get response timeout Timeout = {self.__timeout} s")
         return self.__response
+
+    def _set_response(self, value: str) -> None:
+        self.__response = bytearray(bytes.fromhex(value))
 
     @property
     def timeout(self) -> float:

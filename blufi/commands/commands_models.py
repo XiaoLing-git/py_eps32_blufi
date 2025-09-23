@@ -83,7 +83,11 @@ class BaseDataModels(BaseModel):  # type: ignore[misc]
 
     def data_length_hex(self) -> str:
         """hex data length to str"""
-        return int.to_bytes(self.data_length, byteorder="little", length=1).hex()
+        try:
+            result = int.to_bytes(self.data_length, byteorder="little", length=1).hex()
+        except OverflowError:
+            result = "ff"
+        return result
 
     def __str__(self) -> str:
         """__str__"""

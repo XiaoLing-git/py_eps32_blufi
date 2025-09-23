@@ -1,11 +1,11 @@
 """Main function entry, mainly used for debugging."""
 import asyncio
+import time
 
-from blufi.commands import CustomDataCommand
+from blufi.commands import CustomDataCommand, AckCommand
 from blufi.driver.async_base_driver import AsyncBlufiBaseDriver
 from blufi.driver.async_write_read import AsyncBlufiWriteRead
 from blufi.responses.custom_data_parser import CustomDataParser
-from blufi.responses.response import ResponseParser
 
 
 # logging.basicConfig(
@@ -19,9 +19,34 @@ async def fun():
         ble = AsyncBlufiBaseDriver(device_address="8CBFEA852D7E",timeout=20)
 
         await ble.async_connect()
+
+        start_time = time.time()
+        while True:
+            if time.time() - start_time > 3:
+                break
+            # print(ble.response_parser)
+            ack = AckCommand()
+            # print(ack)
+            await ble.async_send_command(ack)
+
+            await asyncio.sleep(0.5)
+            if ble.response_parser:
+                print(ble.response_parser.frame_control.sector_Data, ble.response)
+
+        cmd = CustomDataCommand("wifitest")
+        await ble.async_send_command(cmd)
+        start_time = time.time()
+        while True:
+            if time.time() - start_time > 10:
+                break
+            await asyncio.sleep(0.5)
+            if ble.response_parser:
+                print(ble.response_parser.frame_control.sector_Data, ble.response)
+
+
         # for i in range(10):
-        ack = CustomDataCommand("wifitest")
-        res = await ble.async_read_large_data_after_write(ack)
+        # ack = CustomDataCommand("wifitest")
+        # res = await ble.async_read_large_data_after_write(ack)
         # if isinstance(res, CustomDataParser):
         #     print(res.content)
 
