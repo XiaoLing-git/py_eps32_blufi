@@ -27,8 +27,8 @@ from .soft_ap_wifi_ssid_command import SoftApWifiSSIDCommand
 from .sta_wifi_bssid_command import StaWifiBSSIDCommand
 from .sta_wifi_password_command import StaWifiPasswordCommand
 from .sta_wifi_ssid_command import StaWifiSSIDCommand
-from .wifi_sta_conn_conn_rssi_command import WifiStaConnRssiCommand
 from .wifi_sta_conn_end_reason_command import WifiStaConnEndReasonCommand
+from .wifi_sta_conn_rssi_command import WifiStaConnRssiCommand
 from .wifi_sta_max_conn_retry_command import WifiStaMaxConnRetryCommand
 
 Commands_Type = Union[

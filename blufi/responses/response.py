@@ -14,6 +14,7 @@ from blufi.models.base_models import (
     TypeField,
 )
 from blufi.responses.ack_parser import AckParser
+from blufi.responses.custom_data_parser import CustomDataParser
 from blufi.responses.parser import Parser
 from blufi.responses.version_parser import VersionParser
 
@@ -66,16 +67,9 @@ class BlufiResponse:
         else:
             if self.frame_control.crc_check is CrcCheck.enable:
                 temp_data = self.__content[8:-4]
-                if self.data_length == int(len(temp_data) / 2):
-                    return temp_data
-                else:
-                    return temp_data[2:]
             else:
                 temp_data = self.__content[8:]
-                if self.data_length == int(len(temp_data) / 2):
-                    return temp_data
-                else:
-                    return temp_data[2:]
+            return temp_data
 
     def is_vector(self) -> bool:
         """is_vector"""
@@ -112,4 +106,7 @@ class BlufiResponse:
                 return AckParser(self.data)
             case DataAddress.VERSION:
                 return VersionParser(self.data)
+            case DataAddress.CUSTOM_DATA:
+                return CustomDataParser(self.data)
+
         return Parser(self.data)

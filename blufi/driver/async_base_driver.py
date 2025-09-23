@@ -81,7 +81,6 @@ class AsyncBlufiBaseDriver(AsyncBlufiWriteRead):
         start_time = time.time()
         # while sector.frame_control.sector_Data is Sector_Data.enable:
         while True:
-            print(sector)
             if time.time() - start_time > self.timeout:
                 raise TimeoutError("Read SectorData timeout")
 

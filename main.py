@@ -2,7 +2,7 @@
 import asyncio
 import time
 
-from blufi.commands import CustomDataCommand, AckCommand, GetVersionCommand
+from blufi.commands import CustomDataCommand, AckCommand, GetVersionCommand, SetSecurityModeCommand, GetWifiListCommand
 from blufi.driver.async_base_driver import AsyncBlufiBaseDriver
 from blufi.driver.async_write_read import AsyncBlufiWriteRead
 
@@ -23,7 +23,7 @@ async def fun():
             if time.time() - start_time > 3:
                 break
             # print(ble.response_parser)
-            ack = GetVersionCommand()
+            ack = AckCommand()
             # print(ack)
             await ble.async_send_command(ack)
 
@@ -31,7 +31,8 @@ async def fun():
             if ble.response_parser:
                 print(ble.get_response().parser())
 
-        cmd = CustomDataCommand("gss_test")
+        print("-"*100)
+        cmd = GetWifiListCommand()
         await ble.async_send_command(cmd)
         start_time = time.time()
         while True:
@@ -39,14 +40,15 @@ async def fun():
                 break
             await asyncio.sleep(0.1)
             if ble.response_parser:
-                print(ble.get_response().frame_control.sector_Data, bytes.fromhex(ble.get_response().data).decode())
+                print(ble.get_response().parser())
 
-        start_time = time.time()
-        while True:
-            if time.time() - start_time > 5:
-                break
-            time.sleep(1)
-            print("hold")
+
+        # start_time = time.time()
+        # while True:
+        #     if time.time() - start_time > 5:
+        #         break
+        #     time.sleep(1)
+        #     print("hold")
 
         # for i in range(10):
         # ack = CustomDataCommand("wifitest")
