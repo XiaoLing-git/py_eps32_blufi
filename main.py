@@ -39,7 +39,7 @@ async def fun():
         await ble.async_send_command(cmd)
         start_time = time.time()
         while True:
-            if time.time() - start_time > 10:
+            if time.time() - start_time > 20:
                 break
             await asyncio.sleep(0.1)
             if ble.response_parser:

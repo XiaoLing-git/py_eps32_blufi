@@ -1,7 +1,5 @@
 """"""
 
-from blufi.commands.commands_models import ControlCommandWithData, FrameControl, PocketType
-
 from ..models.base_models import (
     Ack,
     ControlAddress,
@@ -13,6 +11,7 @@ from ..models.base_models import (
     TypeField,
 )
 from ..serial_number import SerialNumber
+from .commands_models import ControlCommandWithData, FrameControl, PocketType
 
 
 class SetSecurityModeCommand:

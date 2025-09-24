@@ -4,8 +4,8 @@ from typing import Any
 
 from pydantic import BaseModel
 
-from blufi.errors import GenerateCommandException
-from blufi.models.base_models import (
+from ..errors import GenerateCommandException
+from ..models.base_models import (
     Ack,
     ControlAddress,
     CrcCheck,
@@ -15,7 +15,7 @@ from blufi.models.base_models import (
     Sector_Data,
     TypeField,
 )
-from blufi.security.crc import CRC16
+from ..security.crc import CRC16
 
 
 class PocketType(BaseModel):  # type: ignore[misc]

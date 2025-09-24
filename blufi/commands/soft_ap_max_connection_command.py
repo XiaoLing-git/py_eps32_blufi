@@ -1,9 +1,8 @@
 """"""
 
-from blufi.commands.commands_models import ControlCommandWithData, FrameControl, PocketType
-
 from ..models.base_models import Ack, CrcCheck, DataAddress, Direction, Encryption, Sector_Data, TypeField
 from ..serial_number import SerialNumber
+from .commands_models import ControlCommandWithData, FrameControl, PocketType
 
 
 class SoftApMaxConnectionCommand:

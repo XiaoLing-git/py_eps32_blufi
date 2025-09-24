@@ -1,10 +1,9 @@
 """"""
 
-from blufi.commands.commands_models import ControlCommandWithData, FrameControl, PocketType
-
 from ..models.base_models import Ack, CrcCheck, DataAddress, Direction, Encryption, Sector_Data, TypeField
 from ..serial_number import SerialNumber
 from ..utils import assert_hex_str
+from .commands_models import ControlCommandWithData, FrameControl, PocketType
 
 
 class WifiStaConnEndReasonCommand:
