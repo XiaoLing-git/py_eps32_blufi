@@ -2,17 +2,8 @@
 
 from typing import Any
 
-from ..commands.commands_models import FrameControl, PocketType
-from ..models.base_models import (
-    Ack,
-    ControlAddress,
-    CrcCheck,
-    DataAddress,
-    Direction,
-    Encryption,
-    Sector_Data,
-    TypeField,
-)
+from ..commands import FrameControl, PocketType
+from ..models import Ack, ControlAddress, CrcCheck, DataAddress, Direction, Encryption, Sector_Data, TypeField
 from .ack_parser import AckParser
 from .custom_data_parser import CustomDataParser
 from .parser import Parser

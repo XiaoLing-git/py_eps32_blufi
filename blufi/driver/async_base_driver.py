@@ -5,11 +5,10 @@ import logging
 import threading
 import time
 
-from ..commands import AckCommand, Commands_Type
-from ..commands.commands_models import ControlCommandWithData
+from ..commands import AckCommand, Commands_Type, ControlCommandWithData
 from ..errors import AsyncBlufiConnectionError
-from ..models.base_models import ControlAddress, Sector_Data
-from ..responses.response import BlufiResponse
+from ..models import ControlAddress, Sector_Data
+from ..responses import BlufiResponse
 from .async_write_read import AsyncBlufiWriteRead
 
 logger = logging.getLogger(__name__)

@@ -1,6 +1,6 @@
 """"""
 
-from ..models.base_models import SoftAPMode, WifiConnectState, WifiOpMode
+from ..models import SoftAPMode, WifiConnectState, WifiOpMode
 from .parser import Parser
 
 
