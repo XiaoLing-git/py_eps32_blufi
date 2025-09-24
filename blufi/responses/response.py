@@ -2,8 +2,8 @@
 
 from typing import Any
 
-from blufi.commands.commands_models import FrameControl, PocketType
-from blufi.models.base_models import (
+from ..commands.commands_models import FrameControl, PocketType
+from ..models.base_models import (
     Ack,
     ControlAddress,
     CrcCheck,
@@ -13,11 +13,11 @@ from blufi.models.base_models import (
     Sector_Data,
     TypeField,
 )
-from blufi.responses.ack_parser import AckParser
-from blufi.responses.custom_data_parser import CustomDataParser
-from blufi.responses.parser import Parser
-from blufi.responses.version_parser import VersionParser
-from blufi.responses.wifi_status_parser import WifiStatusParser
+from .ack_parser import AckParser
+from .custom_data_parser import CustomDataParser
+from .parser import Parser
+from .version_parser import VersionParser
+from .wifi_status_parser import WifiStatusParser
 
 
 class BlufiResponse:
@@ -111,5 +111,5 @@ class BlufiResponse:
                 return CustomDataParser(self.data)
             case DataAddress.WIFI_CONNECTION_STATE:
                 return WifiStatusParser(self.data)
-        print("e", self.pocket_type.func_code)
+        print("no parser", self.pocket_type.func_code)
         return Parser(self.data)

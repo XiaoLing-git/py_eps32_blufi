@@ -1,7 +1,7 @@
 """"""
 
-from blufi.errors import BlufiBaseException
-from blufi.models.base_models import ErrorCode
+from ..errors import BlufiBaseException
+from ..models.base_models import ErrorCode
 
 
 class ErrorParser:
