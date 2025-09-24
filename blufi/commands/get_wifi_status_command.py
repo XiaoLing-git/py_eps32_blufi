@@ -1,6 +1,6 @@
 """"""
 
-from ..models.base_models import Ack, ControlAddress, CrcCheck, Direction, Encryption, Sector_Data, TypeField
+from ..models import Ack, ControlAddress, CrcCheck, Direction, Encryption, Sector_Data, TypeField
 from ..serial_number import SerialNumber
 from .commands_models import ControlCommand, FrameControl, PocketType
 
