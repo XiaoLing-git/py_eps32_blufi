@@ -1,6 +1,6 @@
 """"""
 
-from blufi.utils import assert_hex_str
+from ..utils import assert_hex_str
 
 
 class CRC16:
