@@ -7,6 +7,7 @@ from typing import Any
 
 from bleak import BleakGATTCharacteristic
 
+from ..commands import ControlCommandWithData
 from ..errors import (
     AsyncBlufiConnectionError,
     AsyncBlufiGetServiceException,
@@ -15,6 +16,8 @@ from ..errors import (
     AsyncBlufiWriteException,
     AsyncBlufiWriteReadException,
 )
+from ..models import Sector_Data
+from ..responses import BlufiResponse
 from .async_connection import AsyncBlufiConnection
 
 logger = logging.getLogger(__name__)
@@ -23,13 +26,7 @@ logger = logging.getLogger(__name__)
 class AsyncBlufiWriteRead(AsyncBlufiConnection):
     """Async Blufi Write Read"""
 
-    __slots__ = (
-        "__write_uuid",
-        "__notify_uuid",
-        "__response",
-        "__cmd",
-        "__timeout",
-    )
+    __slots__ = ("__write_uuid", "__notify_uuid", "__response", "__cmd", "__timeout", "__sector_data")
 
     def __init__(self, device_address: str, timeout: float = 10):
         """
@@ -44,6 +41,7 @@ class AsyncBlufiWriteRead(AsyncBlufiConnection):
         self.__response: bytearray | None = None
         self.__cmd: str = ""
         self.__timeout = timeout
+        self.__sector_data: str | None = None
 
     @property
     def response(self) -> str:
@@ -116,7 +114,22 @@ class AsyncBlufiWriteRead(AsyncBlufiConnection):
 
     def __notification_handler(self, sender: BleakGATTCharacteristic, data: bytearray) -> None:
         """notification handler"""
-        self.__response = data
+        temp = BlufiResponse(data.hex())
+        if temp.frame_control.sector_Data is Sector_Data.enable:
+            if self.__sector_data is None:
+                self.__sector_data = temp.data[4:]
+            else:
+                self.__sector_data = self.__sector_data + temp.data[4:]
+        else:
+            if self.__sector_data:
+                self.__sector_data = self.__sector_data + temp.data
+                value = ControlCommandWithData(
+                    pocket_type=temp.pocket_type, frame_control=temp.frame_control, sn=temp.sn, data=self.__sector_data
+                ).hex()
+                self.__response = bytes.fromhex(value)  # type: ignore[assignment]
+                self.__sector_data = None
+            else:
+                self.__response = data
 
     def __assert_connection_status(self) -> None:
         """

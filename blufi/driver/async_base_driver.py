@@ -16,16 +16,12 @@ logger = logging.getLogger(__name__)
 class AsyncBlufiBaseDriver(AsyncBlufiWriteRead):
     """Async Blufi Base Driver"""
 
-    __slots__ = (
-        "response_parser",
-        "__read_server_flag",
-    )
+    __slots__ = ("response_parser",)
 
     def __init__(self, device_address: str, timeout: float = 10) -> None:
         """init"""
         super().__init__(device_address, timeout)
         self.response_parser: BlufiResponse | None = None
-        self.__read_server_flag: bool = False
 
     async def async_connect(self) -> None:
         """async_connect."""
@@ -35,55 +31,10 @@ class AsyncBlufiBaseDriver(AsyncBlufiWriteRead):
         blufi_response = BlufiResponse(response.hex())
         if blufi_response.pocket_type.func_code is not ControlAddress.ACK:
             raise AsyncBlufiConnectionError("device init fail")
-        asyncio.create_task(self.__async_read_server())
 
     async def async_disconnect(self) -> None:
         """async_disconnect"""
         await super().async_disconnect()
-        self.__read_server_flag = False
-
-    def stop_read_server(self) -> None:
-        """stop_read_server"""
-        self.__read_server_flag = False
-
-    async def __async_read_server(self) -> None:
-        """__async_read_server"""
-        self.__read_server_flag = True
-        try:
-            while self.__read_server_flag:
-                await self.read(clear_response=False)
-                temp_response = BlufiResponse(self.response)
-                if temp_response.frame_control.sector_Data is Sector_Data.disable:
-                    self.response_parser = temp_response
-                else:
-                    await self.read_sector_data(temp_response)
-        except Exception as e:
-            print(e)
-            self.__read_server_flag = False
-            raise e
-
-    async def read_sector_data(self, first_sector: BlufiResponse) -> None:
-        """read_sector_data"""
-        sector = first_sector
-        content = ""
-        start_time = time.time()
-        # while sector.frame_control.sector_Data is Sector_Data.enable:
-        while True:
-            if time.time() - start_time > self.timeout:
-                raise TimeoutError("Read SectorData timeout")
-
-            if sector.frame_control.sector_Data is Sector_Data.disable:
-                content = content + sector.data
-                break
-            else:
-                content = content + sector.data[4:]
-            response = await self.read()
-            sector = BlufiResponse(response.hex())
-        value = ControlCommandWithData(
-            pocket_type=sector.pocket_type, frame_control=sector.frame_control, sn=sector.sn, data=content
-        ).hex()
-        self._set_response(value)
-        self.response_parser = BlufiResponse(value)
 
     async def async_send_command(self, cmd: Commands_Type) -> None:
         """async_send_command"""
@@ -91,5 +42,6 @@ class AsyncBlufiBaseDriver(AsyncBlufiWriteRead):
 
     def get_response(self) -> BlufiResponse:
         """get_response"""
-        assert self.response_parser is not None
-        return self.response_parser
+        response = BlufiResponse(self.response)
+        self.response_parser = response.parser()
+        return response

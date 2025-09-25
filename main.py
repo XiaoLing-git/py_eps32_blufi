@@ -29,7 +29,7 @@ async def fun():
             ack = AckCommand()
             # print(ack)
             await ble.async_send_command(ack)
-
+            ble.get_response()
             time.sleep(0.1)
             if ble.response_parser:
                 print(ble.get_response().pocket_type, ble.get_response().parser())
@@ -42,6 +42,7 @@ async def fun():
             if time.time() - start_time > 20:
                 break
             await asyncio.sleep(0.1)
+            ble.get_response()
             if ble.response_parser:
                 print(ble.get_response().pocket_type, ble.get_response().parser())
 
