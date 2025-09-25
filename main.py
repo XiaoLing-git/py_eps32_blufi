@@ -32,10 +32,10 @@ async def fun():
 
             time.sleep(0.1)
             if ble.response_parser:
-                print(ble.get_response().parser())
+                print(ble.get_response().pocket_type, ble.get_response().parser())
 
         print("-" * 100)
-        cmd = CustomDataCommand(content="ado_test")
+        cmd = CustomDataCommand(content="wifitest")
         await ble.async_send_command(cmd)
         start_time = time.time()
         while True:

@@ -2,7 +2,6 @@
 
 import asyncio
 import logging
-import threading
 import time
 
 from ..commands import AckCommand, Commands_Type, ControlCommandWithData
@@ -36,30 +35,20 @@ class AsyncBlufiBaseDriver(AsyncBlufiWriteRead):
         blufi_response = BlufiResponse(response.hex())
         if blufi_response.pocket_type.func_code is not ControlAddress.ACK:
             raise AsyncBlufiConnectionError("device init fail")
-        self.start_read_server()
+        asyncio.create_task(self.__async_read_server())
 
     async def async_disconnect(self) -> None:
         """async_disconnect"""
         await super().async_disconnect()
         self.__read_server_flag = False
 
-    def start_read_server(self) -> None:
-        """start_read_server"""
-        self.__read_server_flag = True
-        threading.Thread(target=self.__read_server).start()
-
     def stop_read_server(self) -> None:
         """stop_read_server"""
         self.__read_server_flag = False
 
-    def __read_server(self) -> None:
-        """__read_server"""
-        loop = asyncio.new_event_loop()
-        asyncio.set_event_loop(loop)
-        loop.run_until_complete(self.__async_read_server())
-
     async def __async_read_server(self) -> None:
         """__async_read_server"""
+        self.__read_server_flag = True
         try:
             while self.__read_server_flag:
                 await self.read(clear_response=False)

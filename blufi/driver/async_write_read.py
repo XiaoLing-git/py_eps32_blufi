@@ -200,8 +200,10 @@ class AsyncBlufiWriteRead(AsyncBlufiConnection):
         :return:
         """
         start_time = time.time()
-        while self.__response is None:
+        while True:
             await asyncio.sleep(0.01)
+            if self.__response:
+                break
             if time.time() - start_time > self.__timeout:
                 raise AsyncBlufiReadException(f"Get response timeout Timeout = {self.__timeout} s")
         return self.__response
