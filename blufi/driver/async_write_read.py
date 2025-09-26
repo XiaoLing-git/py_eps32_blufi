@@ -7,7 +7,6 @@ from typing import Any
 
 from bleak import BleakGATTCharacteristic
 
-from ..commands import ControlCommandWithData
 from ..errors import (
     AsyncBlufiConnectionError,
     AsyncBlufiGetServiceException,
@@ -16,7 +15,7 @@ from ..errors import (
     AsyncBlufiWriteException,
     AsyncBlufiWriteReadException,
 )
-from ..models import Sector_Data
+from ..models import ControlCommandWithData, Sector_Data
 from ..responses import BlufiResponse
 from .async_connection import AsyncBlufiConnection
 

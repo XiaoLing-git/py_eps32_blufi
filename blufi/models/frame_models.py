@@ -5,8 +5,8 @@ from typing import Any
 from pydantic import BaseModel
 
 from ..errors import GenerateCommandException
-from ..models import Ack, ControlAddress, CrcCheck, DataAddress, Direction, Encryption, Sector_Data, TypeField
 from ..security import CRC16
+from .base_models import Ack, ControlAddress, CrcCheck, DataAddress, Direction, Encryption, Sector_Data, TypeField
 
 
 class PocketType(BaseModel):  # type: ignore[misc]
@@ -227,19 +227,3 @@ class ControlCommandWithLargeData(BaseDataModels):
             f"data = {self.data_hex()}"
             f")"
         )
-
-
-if __name__ == "__main__":
-
-    bc = ControlCommandWithData(
-        pocket_type=PocketType(type_field=TypeField.Data, func_code=DataAddress.STA_WIFI_BSSID),
-        frame_control=FrameControl(
-            encryption=Encryption.enable,
-            crc_check=CrcCheck.disable,
-            direction=Direction.device_to_esp,
-            ack=Ack.disable,
-            sector_Data=Sector_Data.enable,
-        ),
-        data="hello world",
-    )
-    print(bc)

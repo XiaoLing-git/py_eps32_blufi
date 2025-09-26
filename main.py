@@ -8,6 +8,8 @@ from blufi.commands import CustomDataCommand, AckCommand, GetVersionCommand, Set
 from blufi.driver.async_base_driver import AsyncBlufiBaseDriver
 from blufi.driver.async_write_read import AsyncBlufiWriteRead
 from blufi.errors import BlufiBaseException
+from blufi.models import ControlAddress, TypeField
+from blufi.models.frame_models import PocketType
 
 
 #
@@ -133,8 +135,8 @@ async def fun():
 
 
 if __name__ == "__main__":
-    e = BlufiBaseException("hello world")
-    print(e)
+    p = PocketType(type_field=TypeField.Control, func_code=ControlAddress.ACK)
+    print(p)
     # asyncio.run(fun())
     #
     # "410401020103"

@@ -15,6 +15,14 @@ from .base_models import (
     WifiConnectState,
     WifiOpMode,
 )
+from .frame_models import (
+    BaseDataModels,
+    ControlCommand,
+    ControlCommandWithData,
+    ControlCommandWithLargeData,
+    FrameControl,
+    PocketType,
+)
 
 __all__ = (
     "TypeField",
@@ -30,4 +38,10 @@ __all__ = (
     "WifiOpMode",
     "WifiConnectState",
     "SoftAPMode",
+    "PocketType",
+    "FrameControl",
+    "BaseDataModels",
+    "ControlCommand",
+    "ControlCommandWithData",
+    "ControlCommandWithLargeData",
 )

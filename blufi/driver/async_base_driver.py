@@ -1,12 +1,10 @@
 """"""
 
-import asyncio
 import logging
-import time
 
-from ..commands import AckCommand, Commands_Type, ControlCommandWithData
+from ..commands import AckCommand, Commands_Type
 from ..errors import AsyncBlufiConnectionError
-from ..models import ControlAddress, Sector_Data
+from ..models import ControlAddress
 from ..responses import BlufiResponse
 from .async_write_read import AsyncBlufiWriteRead
 
