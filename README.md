@@ -3,14 +3,17 @@
 
 ## Notes:
 
-1. Before you start it, please make sure you have installed the following tools
+1. This project is still in progress, if you have any questions, please feel free to contact us.
+
+2. Before you start it, please make sure you have installed the following tools
    - make == GNU Make 4.4.1
    - poetry == 1.8.0
    - python ==  >=3.10, <=3.14
 
-2. This project is still in progress, if you have any questions, please feel free to contact us.
-
-
+3. After cloning this project, please execute the command
+   ```bash
+   make project_init
+   ```
 
 ## Commands
 

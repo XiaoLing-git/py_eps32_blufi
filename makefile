@@ -76,6 +76,9 @@ commit:clean
 push:commit
 	git push
 
+project_init: update check
+	pre-commit install
+
 echo:
 	echo $1
 	echo $2
