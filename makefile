@@ -54,17 +54,20 @@ else
 endif
 
 
-shell:
-	poetry shell
+build:clean
+	poetry build
 
 install:
 	poetry install
 
-build:clean
-	poetry build
+shell:
+	poetry shell
+
+update:
+	poetry update
 
 check:
-	$(PRECOMMIT) $(target)
+	$(PRECOMMIT) --all-files
 
 commit:clean
 	git add .
