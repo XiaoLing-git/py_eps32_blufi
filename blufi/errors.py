@@ -1,4 +1,4 @@
-""""""
+"""errors.py"""
 
 import logging
 
@@ -17,11 +17,11 @@ class BlufiBaseException(Exception):
 
     def __str__(self) -> str:
         """exception __str__"""
-        return self._msg
+        return f"{self.__class__.__name__}(msg={self._msg})"
 
     def __repr__(self) -> str:
         """exception __repr__"""
-        return self._msg
+        return f"{self.__class__.__name__}(msg={self._msg})"
 
 
 class AsyncBlufiConnectionError(BlufiBaseException):

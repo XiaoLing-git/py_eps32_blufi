@@ -7,6 +7,8 @@ from blufi.commands import CustomDataCommand, AckCommand, GetVersionCommand, Set
     GetWifiStatusCommand, StaWifiSSIDCommand, StaWifiPasswordCommand, ConnectWifiCommand, DisconnectWifiCommand
 from blufi.driver.async_base_driver import AsyncBlufiBaseDriver
 from blufi.driver.async_write_read import AsyncBlufiWriteRead
+from blufi.errors import BlufiBaseException
+
 
 #
 # logging.basicConfig(
@@ -32,7 +34,7 @@ async def fun():
             ble.get_response()
             time.sleep(0.1)
             if ble.response_parser:
-                print(ble.get_response().pocket_type, ble.get_response().parser())
+                print(ble.response_parser)
 
         print("-" * 100)
         cmd = CustomDataCommand(content="wifitest")
@@ -44,7 +46,7 @@ async def fun():
             await asyncio.sleep(0.1)
             ble.get_response()
             if ble.response_parser:
-                print(ble.get_response().pocket_type, ble.get_response().parser())
+                print(ble.response_parser)
 
         # print("-" * 100)
         # cmd = StaWifiPasswordCommand(content="runucleverboy")
@@ -131,8 +133,10 @@ async def fun():
 
 
 if __name__ == "__main__":
-    asyncio.run(fun())
-
-    "410401020103"
+    e = BlufiBaseException("hello world")
+    print(e)
+    # asyncio.run(fun())
+    #
+    # "410401020103"
     # content = b'\x02\x0bXiaomi_2ACD\x03\rrunucleverboy'
     # print(content.decode())
