@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "py_esp32_blufi"
-version = "1.3.0"
+version = "1.1.1"
 description = "python support for esp32_blufi"
 authors = ["xiaoling <samuel.ling.xiao@qq.com>"]
 readme = "README.md"
