@@ -37,6 +37,7 @@ class AsyncBlufiBaseDriver(AsyncBlufiWriteRead):
         response = BlufiResponse(self.response)
         return response
 
+    @property
     def is_connected(self) -> bool:
         """is_connected"""
         return self._client.is_connected  # type: ignore[no-any-return]
