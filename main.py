@@ -4,7 +4,8 @@ import logging
 import time
 
 from blufi.commands import CustomDataCommand, AckCommand, GetVersionCommand, SetSecurityModeCommand, GetWifiListCommand, \
-    GetWifiStatusCommand, StaWifiSSIDCommand, StaWifiPasswordCommand, ConnectWifiCommand, DisconnectWifiCommand
+    GetWifiStatusCommand, StaWifiSSIDCommand, StaWifiPasswordCommand, ConnectWifiCommand, DisconnectWifiCommand, \
+    BleDisconnectCommand
 from blufi.driver.async_base_driver import AsyncBlufiBaseDriver
 from blufi.driver.async_write_read import AsyncBlufiWriteRead
 from blufi.errors import BlufiBaseException
@@ -147,8 +148,9 @@ if __name__ == "__main__":
     )
     print(f)
 
-    for i in range(10):
-        print(AckCommand())
+    print(BleDisconnectCommand())
+    print(AckCommand())
+    print(AckCommand())
 
     # asyncio.run(fun())
     #

@@ -18,7 +18,7 @@ from ..serial_number import SerialNumber
 class AckCommand:
     """AckCommand"""
 
-    __slots__ = ("__cmd",)
+    __slots__ = ("cmd",)
 
     def __init__(
         self,
@@ -30,7 +30,7 @@ class AckCommand:
     ) -> None:
         """init."""
 
-        self.__cmd = ControlCommand(
+        self.cmd = ControlCommand(
             pocket_type=PocketType(type_field=TypeField.Control, func_code=ControlAddress.ACK),
             frame_control=FrameControl(
                 encryption=encryption,
@@ -44,26 +44,26 @@ class AckCommand:
 
     def hex(self) -> str:
         """hex to str"""
-        return self.__cmd.hex()
+        return self.cmd.hex()
 
     def __str__(self) -> str:
         """__str__"""
-        if self.__cmd.frame_control.crc_check is CrcCheck.enable:
+        if self.cmd.frame_control.crc_check is CrcCheck.enable:
             return (
                 f"{self.__class__.__name__}("
-                f"encryption={self.__cmd.frame_control.encryption}, "
-                f"crc_check={self.__cmd.frame_control.crc_check}, "
-                f"ack={self.__cmd.frame_control.ack}, "
-                f"sn={self.__cmd.sn}, "
-                f"crc={self.__cmd.crc}"
+                f"encryption={self.cmd.frame_control.encryption}, "
+                f"crc_check={self.cmd.frame_control.crc_check}, "
+                f"ack={self.cmd.frame_control.ack}, "
+                f"sn={self.cmd.sn}, "
+                f"crc={self.cmd.crc}"
                 f")"
             )
         else:
             return (
                 f"{self.__class__.__name__}("
-                f"encryption={self.__cmd.frame_control.encryption}, "
-                f"crc_check={self.__cmd.frame_control.crc_check}, "
-                f"ack={self.__cmd.frame_control.ack}, "
-                f"sn={self.__cmd.sn}"
+                f"encryption={self.cmd.frame_control.encryption}, "
+                f"crc_check={self.cmd.frame_control.crc_check}, "
+                f"ack={self.cmd.frame_control.ack}, "
+                f"sn={self.cmd.sn}"
                 f")"
             )

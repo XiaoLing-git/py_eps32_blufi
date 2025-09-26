@@ -13,12 +13,13 @@ from ..models import (
     TypeField,
 )
 from ..serial_number import SerialNumber
+from . import AckCommand
 
 
-class BleDisconnectCommand:
+class BleDisconnectCommand(AckCommand):
     """BleDisconnectCommand"""
 
-    __slots__ = ("__cmd",)
+    __slots__ = ("cmd",)
 
     def __init__(
         self,
@@ -30,7 +31,7 @@ class BleDisconnectCommand:
     ) -> None:
         """init."""
 
-        self.__cmd = ControlCommand(
+        self.cmd = ControlCommand(
             pocket_type=PocketType(type_field=TypeField.Control, func_code=ControlAddress.CLOSE_CONNECTION),
             frame_control=FrameControl(
                 encryption=encryption,
@@ -41,7 +42,3 @@ class BleDisconnectCommand:
             ),
             sn=SerialNumber().obj,
         )
-
-    def __str__(self) -> str:
-        """__str__"""
-        return self.__cmd.hex()
