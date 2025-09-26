@@ -71,7 +71,7 @@ from blufi.driver import BlufiBaseDriver
 async def async_fun():
     ble = None
     try:
-        ble = AsyncBlufiBaseDriver(device_address="8CBFEA852D7E", timeout=20,debug=True)
+        ble = AsyncBlufiBaseDriver(device_address="8CBFEA852D7E", timeout=20, debug=True)
 
         await ble.async_connect()
 
