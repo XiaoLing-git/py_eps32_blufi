@@ -79,6 +79,23 @@ push:commit
 project_init: update check
 	pre-commit install
 
+patch:
+	poetry version patch
+
+minor:
+	poetry version minor
+
+major:
+	poetry version major
+
+release:
+	git add .
+	git commit -m $(msg)
+	git push
+	git tag $(msg)
+	git push origin --tags
+
+
 echo:
 	echo $1
 	echo $2
