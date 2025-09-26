@@ -5,6 +5,7 @@ import logging
 import time
 
 from blufi.commands import CustomDataCommand, AckCommand
+from blufi.driver import BlufiBaseDriver
 
 from blufi.driver.async_base_driver import AsyncBlufiBaseDriver
 from blufi.responses import CustomDataParser
@@ -55,8 +56,32 @@ async def fun():
 
 
 if __name__ == "__main__":
-    asyncio.run(fun())
-    #
-    # "410401020103"
-    # content = b'\x02\x0bXiaomi_2ACD\x03\rrunucleverboy'
-    # print(content.decode())
+    # asyncio.run(fun())
+
+    ble = BlufiBaseDriver(device_address="8CBFEA852D7E", timeout=20, debug=True)
+
+    ble.connect()
+
+    start_time = time.time()
+    while True:
+        if time.time() - start_time > 3:
+            break
+        # print(ble.response_parser)
+        ack = AckCommand()
+        # print(ack)
+        ble.send_command(ack)
+        ble.get_response()
+        time.sleep(0.1)
+        res = ble.get_response()
+
+    print("-" * 100)
+    cmd = CustomDataCommand(content="wifitest")
+    ble.send_command(cmd)
+    start_time = time.time()
+    while True:
+        if time.time() - start_time > 20:
+            break
+        time.sleep(0.1)
+        p = ble.get_response().parser()
+        if isinstance(p, CustomDataParser):
+            print(p.format)

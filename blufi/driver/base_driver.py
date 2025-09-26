@@ -60,7 +60,7 @@ class BlufiBaseDriver:
 
     def get_response(self) -> BlufiResponse:
         """get_response"""
-        return self.device.get_response()
+        return self.loop.run_until_complete(self.device.async_get_response())
 
     def is_connected(self) -> bool:
         """is_connected"""
