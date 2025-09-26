@@ -100,3 +100,5 @@ echo:
 	echo $1
 	echo $2
 	echo $2
+
+# make patch release msg="release_1.1.1" build

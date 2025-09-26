@@ -15,7 +15,13 @@
    make project_init
    ```
 
-## Commands
+## Install
+   ```bash
+   pip install https://github.com/XiaoLing-git/py_eps32_blufi/releases/download/release_1.1.1/py_esp32_blufi-1.1.1-py3-none-any.whl
+   ```
+
+
+## Development
 
 ### Build Wheel
 
@@ -35,7 +41,7 @@ make install
 make shell
 ```
 
-### update pip 
+### Update pip 
 
 ```bash
 make update
