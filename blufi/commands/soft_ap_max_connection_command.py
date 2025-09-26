@@ -13,9 +13,10 @@ from ..models import (
     TypeField,
 )
 from ..serial_number import SerialNumber
+from . import AckCommand
 
 
-class SoftApMaxConnectionCommand:
+class SoftApMaxConnectionCommand(AckCommand):
     """SoftApMaxConnectionCommand"""
 
     __slots__ = ("__cmd",)

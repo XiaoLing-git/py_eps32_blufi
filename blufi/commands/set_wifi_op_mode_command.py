@@ -14,9 +14,10 @@ from ..models import (
     WifiOpMode,
 )
 from ..serial_number import SerialNumber
+from . import AckCommand
 
 
-class SetWifiOpModeCommand:
+class SetWifiOpModeCommand(AckCommand):
     """SetWifiOpModeCommand"""
 
     __slots__ = ("__cmd",)

@@ -13,12 +13,13 @@ from ..models import (
     TypeField,
 )
 from ..serial_number import SerialNumber
+from . import AckCommand
 
 
-class DeauthenticateCommand:
+class DeauthenticateCommand(AckCommand):
     """DeauthenticateCommand"""
 
-    __slots__ = ("__cmd",)
+    __slots__ = ("cmd",)
 
     def __init__(
         self,
@@ -31,21 +32,21 @@ class DeauthenticateCommand:
     ) -> None:
         """init."""
 
-        self.__cmd = ControlCommandWithData(
+        self.cmd = ControlCommandWithData(
             pocket_type=PocketType(type_field=TypeField.Control, func_code=ControlAddress.DEAUTHENTICATE),
             frame_control=FrameControl(
                 encryption=encryption,
                 crc_check=crc_check,
                 direction=direction,
                 ack=ack,
-                sector_Data=sector_data,
+                sector_data=sector_data,
             ),
             sn=SerialNumber().obj,
             data=self.format_devices_address(devices_address),
         )
 
     def format_devices_address(self, devices_address: list[str]) -> str:
-        "format_devices_address"
+        """format_devices_address"""
         results: str = ""
         for address in devices_address:
             if isinstance(address, str):
@@ -62,4 +63,24 @@ class DeauthenticateCommand:
 
     def __str__(self) -> str:
         """__str__"""
-        return self.__cmd.hex()
+        if self.cmd.frame_control.crc_check is CrcCheck.enable:
+            return (
+                f"{self.__class__.__name__}("
+                f"encryption={self.cmd.frame_control.encryption}, "
+                f"crc_check={self.cmd.frame_control.crc_check}, "
+                f"ack={self.cmd.frame_control.ack}, "
+                f"sn={self.cmd.sn}, "
+                f"data={self.cmd.data}, "
+                f"crc={self.cmd.crc}"
+                f")"
+            )
+        else:
+            return (
+                f"{self.__class__.__name__}("
+                f"encryption={self.cmd.frame_control.encryption}, "
+                f"crc_check={self.cmd.frame_control.crc_check}, "
+                f"ack={self.cmd.frame_control.ack}, "
+                f"sn={self.cmd.sn}, "
+                f"data={self.cmd.data}"
+                f")"
+            )

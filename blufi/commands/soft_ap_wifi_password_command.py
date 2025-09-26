@@ -14,9 +14,10 @@ from ..models import (
 )
 from ..serial_number import SerialNumber
 from ..utils import assert_hex_str
+from . import AckCommand
 
 
-class SoftApWifiPasswordCommand:
+class SoftApWifiPasswordCommand(AckCommand):
     """SoftApWifiPasswordCommand"""
 
     __slots__ = ("__cmd",)

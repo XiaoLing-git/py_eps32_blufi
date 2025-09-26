@@ -14,9 +14,10 @@ from ..models import (
     TypeField,
 )
 from ..serial_number import SerialNumber
+from . import AckCommand
 
 
-class SetSecurityModeCommand:
+class SetSecurityModeCommand(AckCommand):
     """SetSecurityModeCommand"""
 
     __slots__ = ("__cmd",)

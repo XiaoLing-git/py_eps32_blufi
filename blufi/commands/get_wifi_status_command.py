@@ -13,9 +13,10 @@ from ..models import (
     TypeField,
 )
 from ..serial_number import SerialNumber
+from . import AckCommand
 
 
-class GetWifiStatusCommand:
+class GetWifiStatusCommand(AckCommand):
     """GetWifiStatusCommand"""
 
     __slots__ = ("__cmd",)

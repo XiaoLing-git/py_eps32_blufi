@@ -13,9 +13,10 @@ from ..models import (
     TypeField,
 )
 from ..serial_number import SerialNumber
+from . import AckCommand
 
 
-class SoftApSetChannelCommand:
+class SoftApSetChannelCommand(AckCommand):
     """SoftApSetChannelCommand"""
 
     __slots__ = ("__cmd",)

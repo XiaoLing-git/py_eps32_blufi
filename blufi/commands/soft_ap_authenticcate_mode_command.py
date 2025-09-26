@@ -14,9 +14,10 @@ from ..models import (
     TypeField,
 )
 from ..serial_number import SerialNumber
+from . import AckCommand
 
 
-class SoftApAuthenticateModeCommand:
+class SoftApAuthenticateModeCommand(AckCommand):
     """SoftApAuthenticateModeCommand"""
 
     __slots__ = ("__cmd",)

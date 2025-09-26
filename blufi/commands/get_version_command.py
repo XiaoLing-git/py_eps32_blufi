@@ -13,9 +13,10 @@ from ..models import (
     TypeField,
 )
 from ..serial_number import SerialNumber
+from . import AckCommand
 
 
-class GetVersionCommand:
+class GetVersionCommand(AckCommand):
     """GetVersionCommand"""
 
     __slots__ = ("__cmd",)

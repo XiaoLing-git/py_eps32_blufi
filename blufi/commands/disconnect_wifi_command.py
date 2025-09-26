@@ -13,9 +13,10 @@ from ..models import (
     TypeField,
 )
 from ..serial_number import SerialNumber
+from . import AckCommand
 
 
-class DisconnectWifiCommand:
+class DisconnectWifiCommand(AckCommand):
     """DisconnectWifiCommand"""
 
     __slots__ = ("__cmd",)
