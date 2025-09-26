@@ -48,13 +48,20 @@ class BlufiResponse:
             crc_check=CrcCheck.map_obj(value),
             direction=Direction.map_obj(value),
             ack=Ack.map_obj(value),
-            sector_Data=Sector_Data.map_obj(value),
+            sector_data=Sector_Data.map_obj(value),
         )
 
     @property
     def sn(self) -> str:
         """sn"""
         return self.__content[4:6]
+
+    def crc(self) -> str:
+        """crc"""
+        if self.frame_control.crc_check is CrcCheck.enable:
+            return self.__content[-4:]
+        else:
+            return ""
 
     @property
     def data_length(self) -> int:
@@ -73,33 +80,48 @@ class BlufiResponse:
                 temp_data = self.__content[8:]
             return temp_data
 
-    def is_vector(self) -> bool:
-        """is_vector"""
-        if self.frame_control.sector_Data is Sector_Data.enable:
-            return True
-        else:
-            return False
-
     def __str__(self) -> str:
         """__str__"""
-        if self.data_length == 0:
+        if self.frame_control.crc_check is CrcCheck.enable:
+            if self.data_length == 0:
+                return (
+                    f"{self.__class__.__name__}("
+                    f"pocket_type = {self.pocket_type}, "
+                    f"frame_control = {self.frame_control}, "
+                    f"length = {self.data_length}, "
+                    f"sn = {self.sn}"
+                    f")"
+                )
             return (
                 f"{self.__class__.__name__}("
                 f"pocket_type = {self.pocket_type}, "
                 f"frame_control = {self.frame_control}, "
                 f"length = {self.data_length}, "
-                f"sn = {self.sn}"
+                f"sn = {self.sn}, "
+                f"data = {self.data}"
                 f")"
             )
-        return (
-            f"{self.__class__.__name__}("
-            f"pocket_type = {self.pocket_type}, "
-            f"frame_control = {self.frame_control}, "
-            f"length = {self.data_length}, "
-            f"sn = {self.sn}, "
-            f"data = {self.data}"
-            f")"
-        )
+        else:
+            if self.data_length == 0:
+                return (
+                    f"{self.__class__.__name__}("
+                    f"pocket_type = {self.pocket_type}, "
+                    f"frame_control = {self.frame_control}, "
+                    f"length = {self.data_length}, "
+                    f"sn = {self.sn}, "
+                    f"crc = {self.crc}"
+                    f")"
+                )
+            return (
+                f"{self.__class__.__name__}("
+                f"pocket_type = {self.pocket_type}, "
+                f"frame_control = {self.frame_control}, "
+                f"length = {self.data_length}, "
+                f"sn = {self.sn}, "
+                f"data = {self.data}, "
+                f"crc = {self.crc}"
+                f")"
+            )
 
     def parser(self) -> Any:
         """parse"""
@@ -112,5 +134,4 @@ class BlufiResponse:
                 return CustomDataParser(self.data)
             case DataAddress.WIFI_CONNECTION_STATE:
                 return WifiStatusParser(self.data)
-        print("no parser", self.pocket_type.func_code)
         return Parser(self.data)
