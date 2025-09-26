@@ -100,7 +100,7 @@ class BaseDataModels(BaseModel):  # type: ignore[misc]
     def hex(self) -> str:
         """hex"""
         if self.frame_control.crc_check is CrcCheck.disable:
-            return (f"{self.pocket_type.hex()}{self.frame_control.hex()}{self.sn}{self.data_length_hex()}").lower()
+            return f"{self.pocket_type.hex()}{self.frame_control.hex()}{self.sn}{self.data_length_hex()}".lower()
         return (
             f"{self.pocket_type.hex()}"
             f"{self.frame_control.hex()}"

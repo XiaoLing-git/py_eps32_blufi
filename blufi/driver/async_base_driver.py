@@ -14,13 +14,6 @@ logger = logging.getLogger(__name__)
 class AsyncBlufiBaseDriver(AsyncBlufiWriteRead):
     """Async Blufi Base Driver"""
 
-    __slots__ = ("response_parser",)
-
-    def __init__(self, device_address: str, timeout: float = 10) -> None:
-        """init"""
-        super().__init__(device_address, timeout)
-        self.response_parser: BlufiResponse | None = None
-
     async def async_connect(self) -> None:
         """async_connect."""
         await super().async_connect()
@@ -43,5 +36,8 @@ class AsyncBlufiBaseDriver(AsyncBlufiWriteRead):
         """get_response"""
         response = BlufiResponse(self.response)
         logger.info(f"read: {response}") if self.debug_mode else None
-        self.response_parser = response.parser()
         return response
+
+    def is_connected(self) -> bool:
+        """is_connected"""
+        return self._client.is_connected  # type: ignore[no-any-return]
