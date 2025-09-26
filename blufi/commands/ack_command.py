@@ -37,11 +37,33 @@ class AckCommand:
                 crc_check=crc_check,
                 direction=direction,
                 ack=ack,
-                sector_Data=sector_data,
+                sector_data=sector_data,
             ),
             sn=SerialNumber().obj,
         )
 
+    def hex(self) -> str:
+        """hex to str"""
+        return self.__cmd.hex()
+
     def __str__(self) -> str:
         """__str__"""
-        return self.__cmd.hex()
+        if self.__cmd.frame_control.crc_check is CrcCheck.enable:
+            return (
+                f"{self.__class__.__name__}("
+                f"encryption={self.__cmd.frame_control.encryption}, "
+                f"crc_check={self.__cmd.frame_control.crc_check}, "
+                f"ack={self.__cmd.frame_control.ack}, "
+                f"sn={self.__cmd.sn}, "
+                f"crc={self.__cmd.crc}"
+                f")"
+            )
+        else:
+            return (
+                f"{self.__class__.__name__}("
+                f"encryption={self.__cmd.frame_control.encryption}, "
+                f"crc_check={self.__cmd.frame_control.crc_check}, "
+                f"ack={self.__cmd.frame_control.ack}, "
+                f"sn={self.__cmd.sn}"
+                f")"
+            )

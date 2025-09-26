@@ -146,14 +146,9 @@ if __name__ == "__main__":
         sector_data=Sector_Data.disable
     )
     print(f)
-    b = ControlCommandWithData(
-        pocket_type=p,
-        frame_control=f,
-        sn = SerialNumber().obj,
-        data="881853d1"
-    )
-    print(b)
-    print(b.hex())
+
+    for i in range(10):
+        print(AckCommand())
 
     # asyncio.run(fun())
     #
