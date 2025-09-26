@@ -1,4 +1,4 @@
-""""""
+"""base model for all project"""
 
 from __future__ import annotations
 
@@ -9,7 +9,9 @@ from ..errors import EnumItemNotExistError
 
 class TypeField(Enum):
     """
-    Type Field
+    Set or indicate the type of data frame
+    @:param Control frames are not encrypted yet, but can be verified.
+    @:param Data ames can be encrypted and verified.
     """
 
     Control = 0x00
@@ -27,7 +29,9 @@ class TypeField(Enum):
 
 class Encryption(Enum):
     """
-    Encryption
+    Set or indicate whether the data frame is encrypted
+    @:param disable
+    @:param enable
     """
 
     disable = 0x00
@@ -45,7 +49,9 @@ class Encryption(Enum):
 
 class CrcCheck(Enum):
     """
-    Crc Check
+    Set or indicate whether the data frame is CRC checked
+    @:param disable
+    @:param enable
     """
 
     disable = 0x00 << 1
@@ -63,7 +69,9 @@ class CrcCheck(Enum):
 
 class Direction(Enum):
     """
-    Direction
+    Set or indicate the transmission direction of the data frame
+    @:param device_to_esp
+    @:param esp_to_device
     """
 
     device_to_esp = 0x00 << 2
@@ -81,7 +89,9 @@ class Direction(Enum):
 
 class Ack(Enum):
     """
-    Ack
+    Set whether a response is required after the data frame is sent successfully
+    @:param disable
+    @:param enable
     """
 
     disable = 0x00 << 3
@@ -99,7 +109,9 @@ class Ack(Enum):
 
 class Sector_Data(Enum):
     """
-    Sector Data
+    Set or indicate that the current data frame is segmented transmission
+    @:param disable
+    @:param enable
     """
 
     disable = 0x00 << 4
@@ -115,14 +127,10 @@ class Sector_Data(Enum):
         raise EnumItemNotExistError(f"{cls.__name__} can't map {data:02X}")
 
 
-class BlufiBaseEnum(Enum):
-    """base model for SecurityMode."""
-
-    pass
-
-
-class ControlAddress(BlufiBaseEnum):
-    """base model for SecurityMode."""
+class ControlAddress(Enum):
+    """
+    Set or indicate the type of the current control frame
+    """
 
     ACK = 0x00 << 2
     SET_SEC_MODE = 0x01 << 2
@@ -145,8 +153,10 @@ class ControlAddress(BlufiBaseEnum):
         raise EnumItemNotExistError(f"{cls.__name__} can't map {data:02X}")
 
 
-class DataAddress(BlufiBaseEnum):
-    """base model for SecurityMode."""
+class DataAddress(Enum):
+    """
+    Set or indicate the type of the current data frame
+    """
 
     NEG = 0x00 << 2
     STA_WIFI_BSSID = 0x01 << 2
@@ -182,8 +192,10 @@ class DataAddress(BlufiBaseEnum):
         raise EnumItemNotExistError(f"{cls.__name__} can't map {data:02X}")
 
 
-class ErrorCode(BlufiBaseEnum):
-    """base model for SecurityMode."""
+class ErrorCode(Enum):
+    """
+    Exception code analysis
+    """
 
     sequence_error = 0x00
     checksum_error = 0x01
@@ -207,7 +219,7 @@ class ErrorCode(BlufiBaseEnum):
         raise EnumItemNotExistError(f"{cls.__name__} can't map {data:02X}")
 
 
-class SecurityMode(BlufiBaseEnum):
+class SecurityMode(Enum):
     """base model for SecurityMode."""
 
     No_Checksum_No_Encryption = 0x00
@@ -224,7 +236,7 @@ class SecurityMode(BlufiBaseEnum):
         raise EnumItemNotExistError(f"{cls.__name__} can't map {data:02X}")
 
 
-class WifiOpMode(BlufiBaseEnum):
+class WifiOpMode(Enum):
     """base model for WifiOpMode."""
 
     NULL = 0x00
@@ -241,7 +253,7 @@ class WifiOpMode(BlufiBaseEnum):
         raise EnumItemNotExistError(f"{cls.__name__} can't map {data:02X}")
 
 
-class WifiConnectState(BlufiBaseEnum):
+class WifiConnectState(Enum):
     """Wifi Connect State."""
 
     Connected = 0x00
@@ -258,7 +270,7 @@ class WifiConnectState(BlufiBaseEnum):
         raise EnumItemNotExistError(f"{cls.__name__} can't map {data:02X}")
 
 
-class SoftAPMode(BlufiBaseEnum):
+class SoftAPMode(Enum):
     """base model for SoftAPMode."""
 
     OPEN = 0x00

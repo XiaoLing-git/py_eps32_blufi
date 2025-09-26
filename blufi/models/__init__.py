@@ -2,7 +2,6 @@
 
 from .base_models import (
     Ack,
-    BlufiBaseEnum,
     ControlAddress,
     CrcCheck,
     DataAddress,
@@ -18,7 +17,6 @@ from .base_models import (
 )
 
 __all__ = (
-    "BlufiBaseEnum",
     "TypeField",
     "Encryption",
     "CrcCheck",
