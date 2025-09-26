@@ -36,10 +36,12 @@ class AsyncBlufiBaseDriver(AsyncBlufiWriteRead):
 
     async def async_send_command(self, cmd: Commands_Type) -> None:
         """async_send_command"""
+        logger.info(f"Send: {cmd}") if self.debug_mode else None
         await self.write(str(cmd), clear_response=False)
 
     def get_response(self) -> BlufiResponse:
         """get_response"""
         response = BlufiResponse(self.response)
+        logger.info(f"read: {response}") if self.debug_mode else None
         self.response_parser = response.parser()
         return response

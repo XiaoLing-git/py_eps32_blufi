@@ -75,11 +75,11 @@ class AsyncBlufiWriteRead(AsyncBlufiConnection):
                 service_data[service.description] = {service.uuid: ["service_uuid"]}
                 for c in service.characteristics:
                     service_data[service.description][c.uuid] = c.properties
-            logger.info("Succeed to obtained Bluetooth device service") if self.__debug_mode else None
+            logger.info("Succeed to obtained Bluetooth device service") if self.debug_mode else None
             return service_data
         except Exception as e:
             msg: str = f"Failed to obtain Bluetooth device service :{e}"
-            logger.info(msg) if self.__debug_mode else None
+            logger.info(msg) if self.debug_mode else None
             raise AsyncBlufiGetServiceException(msg) from e
 
     def __get_uuid(self) -> tuple[str | None, str | None]:
@@ -100,13 +100,13 @@ class AsyncBlufiWriteRead(AsyncBlufiConnection):
                         self.__write_uuid = uuid
                     if "notify" in uuids[uuid]:
                         self.__notify_uuid = uuid
-                logger.info("get UUID succeed") if self.__debug_mode else None
+                logger.info("get UUID succeed") if self.debug_mode else None
             return self.__write_uuid, self.__notify_uuid
         except AsyncBlufiGetUUIDException as e:
-            logger.info(f"{e}") if self.__debug_mode else None
+            logger.info(f"{e}") if self.debug_mode else None
             raise e
         except Exception as e:
-            logger.info(f"{e}") if self.__debug_mode else None
+            logger.info(f"{e}") if self.debug_mode else None
             raise AsyncBlufiGetUUIDException(f"Bluetooth device[{self.address}] Failed to obtain UUID: {e}")
 
     def __notification_handler(self, sender: BleakGATTCharacteristic, data: bytearray) -> None:
@@ -134,10 +134,10 @@ class AsyncBlufiWriteRead(AsyncBlufiConnection):
         :return:
         """
         if self.__write_uuid is None or self.__notify_uuid is None:
-            logger.info("UUID is none and you try to send a command.") if self.__debug_mode else None
+            logger.info("UUID is none and you try to send a command.") if self.debug_mode else None
             raise AsyncBlufiWriteReadException(f"UUID is none and you try to send a command.")
         if not self._client.is_connected:
-            logger.info("The device is not connected and you try to send a command.") if self.__debug_mode else None
+            logger.info("The device is not connected and you try to send a command.") if self.debug_mode else None
             raise AsyncBlufiConnectionError(f"Please make sure the device is connected when sending the command")
 
     async def _start_notify(self) -> None:
@@ -162,10 +162,10 @@ class AsyncBlufiWriteRead(AsyncBlufiConnection):
         self.__cmd = data
         if clear_response:
             self.__response = None
-            logger.info(f"Clear Response: {self.__response}") if self.__debug_mode else None
+            logger.info(f"Clear Response: {self.__response}") if self.debug_mode else None
 
         try:
-            logger.info(f"Write: {data}") if self.__debug_mode else None
+            logger.info(f"Write: {data}") if self.debug_mode else None
             await self._client.write_gatt_char(self.__write_uuid, bytes.fromhex(data))
         except Exception as e:
             raise AsyncBlufiWriteException(f"Device: {self.address} write_gatt_char fail: {e}") from e
@@ -180,7 +180,7 @@ class AsyncBlufiWriteRead(AsyncBlufiConnection):
         try:
 
             response = await self.__read_until_timeout()
-            logger.info(f"Read : {response.hex()}") if self.__debug_mode else None
+            logger.info(f"Read : {response.hex()}") if self.debug_mode else None
         except Exception as e:
             raise AsyncBlufiReadException(f"{self.address} Get response fail {e}") from e
 
@@ -200,7 +200,7 @@ class AsyncBlufiWriteRead(AsyncBlufiConnection):
         if self.__response is None:
             raise AsyncBlufiWriteReadException("No response received")
 
-        logger.info(f"Data: {data} Response: {self.__response.hex()}") if self.__debug_mode else None
+        logger.info(f"Data: {data} Response: {self.__response.hex()}") if self.debug_mode else None
 
         return self.__response
 

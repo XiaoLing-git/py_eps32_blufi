@@ -28,6 +28,11 @@ class AsyncBlufiConnection:
         self.__debug_mode = mode
 
     @property
+    def debug_mode(self) -> bool:
+        """debug mode"""
+        return self.debug_mode
+
+    @property
     def _client(self) -> BleakClient:
         """only for subclass"""
         if self.__client is None:
@@ -47,52 +52,52 @@ class AsyncBlufiConnection:
     async def async_connect(self) -> None:
         """async connect"""
 
-        logger.info(f"Try to establish a Bluetooth connection, address:{self.address}") if self.__debug_mode else None
+        logger.info(f"Try to establish a Bluetooth connection, address:{self.address}") if self.debug_mode else None
         try:
             if self.__client is None:
                 self.__client = BleakClient(self.address)
 
                 await self.__client.connect()
-                logger.info("New connection established successfully") if self.__debug_mode else None
+                logger.info("New connection established successfully") if self.debug_mode else None
                 return
             if isinstance(self.__client, BleakClient):
                 if self.__client.is_connected:
                     (
                         logger.info("Bluetooth is already connected, no need to connect again")
-                        if self.__debug_mode
+                        if self.debug_mode
                         else None
                     )
                     return
                 else:
-                    logger.info("Bluetooth has been disconnected, reconnecting~~~") if self.__debug_mode else None
+                    logger.info("Bluetooth has been disconnected, reconnecting~~~") if self.debug_mode else None
                     await self.__client.connect()
-                    logger.info("Bluetooth connection successful") if self.__debug_mode else None
+                    logger.info("Bluetooth connection successful") if self.debug_mode else None
                     return
         except Exception as e:
-            logger.info(f"Abnormality during Bluetooth connection:{e}") if self.__debug_mode else None
+            logger.info(f"Abnormality during Bluetooth connection:{e}") if self.debug_mode else None
             raise AsyncBlufiConnectionError(str(e)) from e
 
     async def async_disconnect(self) -> None:
         """async disconnect"""
         try:
             if self.__client is None:
-                logger.info("No connection established, no need to disconnect") if self.__debug_mode else None
+                logger.info("No connection established, no need to disconnect") if self.debug_mode else None
                 return
             if self.__client.is_connected:
-                logger.info("Bluetooth is connected, disconnecting~~~") if self.__debug_mode else None
+                logger.info("Bluetooth is connected, disconnecting~~~") if self.debug_mode else None
                 try:
                     async with as_timeout(0.5):
                         await self.__client.disconnect()
                         await self.__client.unpair()
                         (
                             logger.info("Bluetooth is connected and disconnected successfully")
-                            if self.__debug_mode
+                            if self.debug_mode
                             else None
                         )
                 except asyncio.TimeoutError:
                     self.__del_client()
-                    logger.info("Bluetooth is connected, force disconnect") if self.__debug_mode else None
+                    logger.info("Bluetooth is connected, force disconnect") if self.debug_mode else None
         except Exception as e:
             msg: str = f"{self.address} Disconnection failed, please try restarting the software: {e}"
-            logger.info(msg) if self.__debug_mode else None
+            logger.info(msg) if self.debug_mode else None
             raise AsyncBlufiDisconnectionError(msg) from e

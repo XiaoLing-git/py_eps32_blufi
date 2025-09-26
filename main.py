@@ -137,24 +137,7 @@ async def fun():
 
 
 if __name__ == "__main__":
-    p = PocketType(type_field=TypeField.Control, func_code=ControlAddress.ACK)
-    print(p)
-    f = FrameControl(
-        encryption=Encryption.disable,
-        crc_check=CrcCheck.enable,
-        direction=Direction.device_to_esp,
-        ack=Ack.disable,
-        sector_data=Sector_Data.disable
-    )
-    print(f)
-
-    print(BleDisconnectCommand())
-    print(AckCommand())
-    print(AckCommand())
-    print(CACertificationCommand(content="dddfff"))
-    print(CACertificationCommand(crc_check=CrcCheck.enable, content="dddfff"))
-
-    # asyncio.run(fun())
+    asyncio.run(fun())
     #
     # "410401020103"
     # content = b'\x02\x0bXiaomi_2ACD\x03\rrunucleverboy'
