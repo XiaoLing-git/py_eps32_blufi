@@ -8,8 +8,9 @@ from blufi.commands import CustomDataCommand, AckCommand, GetVersionCommand, Set
 from blufi.driver.async_base_driver import AsyncBlufiBaseDriver
 from blufi.driver.async_write_read import AsyncBlufiWriteRead
 from blufi.errors import BlufiBaseException
-from blufi.models import ControlAddress, TypeField
-from blufi.models.frame_models import PocketType
+from blufi.models import ControlAddress, TypeField, Encryption, CrcCheck, Direction, Ack, Sector_Data
+from blufi.models.frame_models import PocketType, FrameControl, BaseDataModels, ControlCommandWithData
+from blufi.serial_number import SerialNumber
 
 
 #
@@ -137,6 +138,23 @@ async def fun():
 if __name__ == "__main__":
     p = PocketType(type_field=TypeField.Control, func_code=ControlAddress.ACK)
     print(p)
+    f = FrameControl(
+        encryption=Encryption.disable,
+        crc_check=CrcCheck.enable,
+        direction=Direction.device_to_esp,
+        ack=Ack.disable,
+        sector_data=Sector_Data.disable
+    )
+    print(f)
+    b = ControlCommandWithData(
+        pocket_type=p,
+        frame_control=f,
+        sn = SerialNumber().obj,
+        data="881853d1"
+    )
+    print(b)
+    print(b.hex())
+
     # asyncio.run(fun())
     #
     # "410401020103"

@@ -1,4 +1,4 @@
-""""""
+"""frame_models.py"""
 
 from typing import Any
 
@@ -29,6 +29,10 @@ class PocketType(BaseModel):  # type: ignore[misc]
         value = self.type_field.value | self.func_code.value
         return f"{value:02X}"
 
+    def __str__(self) -> str:
+        """__str__"""
+        return f"{self.__class__.__name__}(type_field={self.type_field}, func_code={self.func_code})"
+
 
 class FrameControl(BaseModel):  # type: ignore[misc]
     """Frame Control"""
@@ -37,7 +41,7 @@ class FrameControl(BaseModel):  # type: ignore[misc]
     crc_check: CrcCheck
     direction: Direction
     ack: Ack
-    sector_Data: Sector_Data
+    sector_data: Sector_Data
 
     def hex(self) -> str:
         """hex to str"""
@@ -46,9 +50,21 @@ class FrameControl(BaseModel):  # type: ignore[misc]
             | self.crc_check.value
             | self.direction.value
             | self.ack.value
-            | self.sector_Data.value
+            | self.sector_data.value
         )
         return f"{value:02X}"
+
+    def __str__(self) -> str:
+        """__str__"""
+        return (
+            f"{self.__class__.__name__}("
+            f"encryption={self.encryption}, "
+            f"crc_check={self.crc_check}, "
+            f"direction={self.direction}, "
+            f"ack={self.ack}, "
+            f"sector_data={self.sector_data}"
+            f")"
+        )
 
 
 class BaseDataModels(BaseModel):  # type: ignore[misc]
@@ -62,8 +78,9 @@ class BaseDataModels(BaseModel):  # type: ignore[misc]
 
     def model_post_init(self, context: Any, /) -> None:
         """model_post_init"""
-        assert self.frame_control.sector_Data is Sector_Data.disable
-        self.generate_crc()
+        assert self.frame_control.sector_data is Sector_Data.disable
+        if self.frame_control.crc_check is CrcCheck.enable:
+            self.generate_crc()
 
     def generate_crc(self) -> None:
         """generate crc"""
@@ -80,20 +97,10 @@ class BaseDataModels(BaseModel):  # type: ignore[misc]
             result = "ff"
         return result
 
-    def __str__(self) -> str:
-        """__str__"""
-        return f"{self.pocket_type.hex()}{self.frame_control.hex()}{self.sn}{self.data_length_hex()}{self.crc}".lower()
-
-
-class ControlCommand(BaseDataModels):
-    """Control Command"""
-
     def hex(self) -> str:
         """hex"""
         if self.frame_control.crc_check is CrcCheck.disable:
-            return (
-                f"{self.pocket_type.hex()}" f"{self.frame_control.hex()}" f"{self.sn}" f"{self.data_length_hex()}"
-            ).lower()
+            return (f"{self.pocket_type.hex()}{self.frame_control.hex()}{self.sn}{self.data_length_hex()}").lower()
         return (
             f"{self.pocket_type.hex()}"
             f"{self.frame_control.hex()}"
@@ -104,14 +111,29 @@ class ControlCommand(BaseDataModels):
 
     def __str__(self) -> str:
         """__str__"""
-        return (
-            f"{self.__class__.__name__}("
-            f"pocket_type = {self.pocket_type}, "
-            f"frame_control = {self.frame_control}, "
-            f"length = {self.data_length}, "
-            f"sn = {self.sn}, "
-            f")"
-        )
+        if self.frame_control.crc_check is CrcCheck.enable:
+            return (
+                f"{self.__class__.__name__}("
+                f"pocket_type={self.pocket_type}, "
+                f"frame_control={self.frame_control}, "
+                f"data_length={self.data_length}, "
+                f"sn={self.sn}, "
+                f"crc={self.crc}"
+                f")"
+            )
+        else:
+            return (
+                f"{self.__class__.__name__}("
+                f"pocket_type={self.pocket_type}, "
+                f"frame_control={self.frame_control}, "
+                f"data_length={self.data_length}, "
+                f"sn={self.sn}"
+                f")"
+            )
+
+
+class ControlCommand(BaseDataModels):
+    """Control Command"""
 
 
 class ControlCommandWithData(BaseDataModels):
@@ -121,9 +143,10 @@ class ControlCommandWithData(BaseDataModels):
 
     def model_post_init(self, context: Any, /) -> None:
         """model_post_init"""
-        assert self.frame_control.sector_Data is Sector_Data.disable
+        assert self.frame_control.sector_data is Sector_Data.disable
         self.data_length = int(len(self.data) / 2)
-        self.generate_crc()
+        if self.frame_control.crc_check is CrcCheck.enable:
+            self.generate_crc()
 
     def generate_crc(self) -> None:
         """generate crc"""
@@ -152,15 +175,27 @@ class ControlCommandWithData(BaseDataModels):
 
     def __str__(self) -> str:
         """__str__"""
-        return (
-            f"{self.__class__.__name__}("
-            f"pocket_type = {self.pocket_type}, "
-            f"frame_control = {self.frame_control}, "
-            f"length = {self.data_length}, "
-            f"sn = {self.sn}, "
-            f"data = {self.data}"
-            f")"
-        )
+        if self.frame_control.crc_check is CrcCheck.enable:
+            return (
+                f"{self.__class__.__name__}("
+                f"pocket_type={self.pocket_type}, "
+                f"frame_control={self.frame_control}, "
+                f"data_length={self.data_length}, "
+                f"sn={self.sn}, "
+                f"data={self.data}"
+                f"crc={self.crc}"
+                f")"
+            )
+        else:
+            return (
+                f"{self.__class__.__name__}("
+                f"pocket_type={self.pocket_type}, "
+                f"frame_control={self.frame_control}, "
+                f"data_length={self.data_length}, "
+                f"sn={self.sn}, "
+                f"data={self.data}"
+                f")"
+            )
 
 
 class ControlCommandWithLargeData(BaseDataModels):
@@ -172,8 +207,9 @@ class ControlCommandWithLargeData(BaseDataModels):
     def model_post_init(self, context: Any, /) -> None:
         """model_post_init"""
         assert self.frame_control.sector_Data is Sector_Data.enable
-        self.data_length = int((len(self.data) - 2) / 2)
-        self.generate_crc()
+        self.data_length = int(len(self.data) / 2) + 4
+        if self.frame_control.crc_check is CrcCheck.enable:
+            self.generate_crc()
 
     def generate_crc(self) -> None:
         """generate crc"""
@@ -217,13 +253,26 @@ class ControlCommandWithLargeData(BaseDataModels):
 
     def __str__(self) -> str:
         """__str__"""
-        return (
-            f"{self.__class__.__name__}("
-            f"pocket_type = {self.pocket_type}, "
-            f"frame_control = {self.frame_control}, "
-            f"length = {self.data_length}, "
-            f"sn = {self.sn}, "
-            f"remain = {self.remain_length}, "
-            f"data = {self.data_hex()}"
-            f")"
-        )
+        if self.frame_control.crc_check is CrcCheck.enable:
+            return (
+                f"{self.__class__.__name__}("
+                f"pocket_type={self.pocket_type}, "
+                f"frame_control={self.frame_control}, "
+                f"data_length={self.data_length}, "
+                f"sn={self.sn}, "
+                f"remain_length={self.remain_length}, "
+                f"data={self.data}"
+                f"crc={self.crc}"
+                f")"
+            )
+        else:
+            return (
+                f"{self.__class__.__name__}("
+                f"pocket_type={self.pocket_type}, "
+                f"frame_control={self.frame_control}, "
+                f"data_length={self.data_length}, "
+                f"sn={self.sn}, "
+                f"remain_length={self.remain_length}, "
+                f"data={self.data}"
+                f")"
+            )
