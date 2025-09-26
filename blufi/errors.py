@@ -1,4 +1,4 @@
-"""errors.py"""
+"""Custom Exceptions."""
 
 import logging
 
