@@ -7,9 +7,7 @@ import time
 from blufi.commands import CustomDataCommand, AckCommand
 
 from blufi.driver.async_base_driver import AsyncBlufiBaseDriver
-
-
-
+from blufi.responses import CustomDataParser
 
 logging.basicConfig(
     level=logging.INFO,  # 核心：设置最低日志级别为DEBUG
@@ -43,83 +41,9 @@ async def fun():
             if time.time() - start_time > 20:
                 break
             await asyncio.sleep(0.1)
-            ble.get_response()
-            ble.get_response()
-
-        # print("-" * 100)
-        # cmd = StaWifiPasswordCommand(content="runucleverboy")
-        # await ble.async_send_command(cmd)
-        # start_time = time.time()
-        # while True:
-        #     if time.time() - start_time > 10:
-        #         break
-        #     await asyncio.sleep(0.1)
-        #     if ble.response_parser:
-        #         print(ble.get_response().pocket_type, ble.get_response().parser())
-        #
-        # print("-" * 100)
-        # cmd = ConnectWifiCommand()
-        # await ble.async_send_command(cmd)
-        # start_time = time.time()
-        # while True:
-        #     if time.time() - start_time > 10:
-        #         break
-        #     await asyncio.sleep(0.1)
-        #     if ble.response_parser:
-        #         p = ble.get_response()
-        #         print("@", p.pocket_type.func_code, p.parser())
-
-        # print("-" * 100)
-        # cmd = DisconnectWifiCommand()
-        # await ble.async_send_command(cmd)
-        # start_time = time.time()
-        # while True:
-        #     if time.time() - start_time > 10:
-        #         break
-        #     await asyncio.sleep(0.1)
-        #     if ble.response_parser:
-        #         p = ble.get_response()
-        #         print("@", p.pocket_type.func_code, p.parser())
-
-        # start_time = time.time()
-        # while True:
-        #     if time.time() - start_time > 5:
-        #         break
-        #     time.sleep(1)
-        #     print("hold")
-
-        # for i in range(10):
-        # ack = CustomDataCommand("wifitest")
-        # res = await ble.async_read_large_data_after_write(ack)
-        # if isinstance(res, CustomDataParser):
-        #     print(res.content)
-
-        # for n in range(10):
-        #     ack =  CustomDataCommand("wifitest")
-        #     print(ack)
-        #     # print(f"Command: {ack}, sn ={ack.sn} length ={ack.data_length}")
-        #     res = await ble.async_read_after_write(str(ack))
-        #     br = ResponseParser(res.hex())
-        #     # if isinstance(br, AckParser):
-        #     br.parser()
-        #     print(br)
-        #     print("*"*100)
-        #     await asyncio.sleep(3)
-
-        # ack = CustomDataCommand("gss_test")
-        # print(ack)
-        # print(f"Command: {ack}, sn ={ack.sn} length ={ack.data_length}")
-        # res = await ble.async_read_after_write(str(ack))
-        # br = ResponseParser(res.hex())
-        # br.parser()
-        # print(br)
-        #
-        # for i in range(10):
-        #     res = await ble.read(clear=True)
-        #     br = ResponseParser(res.hex())
-        #     br.parser()
-        #     print(br)
-
+            p = ble.get_response().parser()
+            if isinstance(p, CustomDataParser):
+                print(p.format)
 
 
 

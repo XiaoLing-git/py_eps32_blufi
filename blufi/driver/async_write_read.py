@@ -115,9 +115,9 @@ class AsyncBlufiWriteRead(AsyncBlufiConnection):
         logger.info(f"Read: {temp}") if self.debug_mode else None
         if temp.frame_control.sector_data is Sector_Data.enable:
             if self.__sector_data is None:
-                self.__sector_data = temp.data[4:]
+                self.__sector_data = temp.data
             else:
-                self.__sector_data = self.__sector_data + temp.data[4:]
+                self.__sector_data = self.__sector_data + temp.data
         else:
             if self.__sector_data:
                 self.__sector_data = self.__sector_data + temp.data

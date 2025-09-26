@@ -70,16 +70,31 @@ class BlufiResponse:
         return int.from_bytes(bytes.fromhex(self.__content[6:8]), byteorder="little")
 
     @property
+    def data_remain_length(self) -> int:
+        """data remain length"""
+        if self.frame_control.sector_data is Sector_Data.enable:
+            return int.from_bytes(bytes.fromhex(self.__content[8:12]), byteorder="little") - self.data_length + 2
+        else:
+            return 0
+
+    @property
     def data(self) -> str:
         """data"""
-        if self.data_length == 0:
-            return ""
-        else:
+        if self.frame_control.sector_data is Sector_Data.enable:
             if self.frame_control.crc_check is CrcCheck.enable:
-                temp_data = self.__content[8:-4]
+                temp_data = self.__content[12:-4]
             else:
-                temp_data = self.__content[8:]
+                temp_data = self.__content[12:]
             return temp_data
+        else:
+            if self.data_length == 0:
+                return ""
+            else:
+                if self.frame_control.crc_check is CrcCheck.enable:
+                    temp_data = self.__content[8:-4]
+                else:
+                    temp_data = self.__content[8:]
+                return temp_data
 
     def __str__(self) -> str:
         """__str__"""
@@ -90,6 +105,7 @@ class BlufiResponse:
                     f"pocket_type = {self.pocket_type}, "
                     f"frame_control = {self.frame_control}, "
                     f"length = {self.data_length}, "
+                    f"data_remain_length = {self.data_remain_length}, "
                     f"sn = {self.sn}"
                     f")"
                 )
@@ -98,6 +114,7 @@ class BlufiResponse:
                 f"pocket_type = {self.pocket_type}, "
                 f"frame_control = {self.frame_control}, "
                 f"length = {self.data_length}, "
+                f"data_remain_length = {self.data_remain_length}, "
                 f"sn = {self.sn}, "
                 f"data = {self.data}"
                 f")"
@@ -109,6 +126,7 @@ class BlufiResponse:
                     f"pocket_type = {self.pocket_type}, "
                     f"frame_control = {self.frame_control}, "
                     f"length = {self.data_length}, "
+                    f"data_remain_length = {self.data_remain_length}, "
                     f"sn = {self.sn}, "
                     f"crc = {self.crc}"
                     f")"
@@ -118,6 +136,7 @@ class BlufiResponse:
                 f"pocket_type = {self.pocket_type}, "
                 f"frame_control = {self.frame_control}, "
                 f"length = {self.data_length}, "
+                f"data_remain_length = {self.data_remain_length}, "
                 f"sn = {self.sn}, "
                 f"data = {self.data}, "
                 f"crc = {self.crc}"
