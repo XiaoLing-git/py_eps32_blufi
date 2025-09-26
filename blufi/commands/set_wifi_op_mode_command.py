@@ -20,7 +20,7 @@ from . import AckCommand
 class SetWifiOpModeCommand(AckCommand):
     """SetWifiOpModeCommand"""
 
-    __slots__ = ("__cmd",)
+    __slots__ = ("cmd",)
 
     def __init__(
         self,
@@ -33,14 +33,14 @@ class SetWifiOpModeCommand(AckCommand):
     ) -> None:
         """init."""
 
-        self.__cmd = ControlCommandWithData(
+        self.cmd = ControlCommandWithData(
             pocket_type=PocketType(type_field=TypeField.Control, func_code=ControlAddress.SET_OP_MODE),
             frame_control=FrameControl(
                 encryption=encryption,
                 crc_check=crc_check,
                 direction=direction,
                 ack=ack,
-                sector_Data=sector_data,
+                sector_data=sector_data,
             ),
             sn=SerialNumber().obj,
             data=int.to_bytes(wifi_mode.value, byteorder="little", length=1).hex(),
@@ -49,13 +49,9 @@ class SetWifiOpModeCommand(AckCommand):
     @property
     def sn(self) -> str:
         """SN"""
-        return self.__cmd.sn
+        return self.cmd.sn
 
     @property
     def data_length(self) -> int:
         """data_length"""
-        return self.__cmd.data_length
-
-    def __str__(self) -> str:
-        """__str__"""
-        return self.__cmd.hex()
+        return self.cmd.data_length

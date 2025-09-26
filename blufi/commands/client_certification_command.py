@@ -45,27 +45,3 @@ class ClientCertificationCommand(AckCommand):
             sn=SerialNumber().obj,
             data=content,
         )
-
-    def __str__(self) -> str:
-        """__str__"""
-        if self.cmd.frame_control.crc_check is CrcCheck.enable:
-            return (
-                f"{self.__class__.__name__}("
-                f"encryption={self.cmd.frame_control.encryption}, "
-                f"crc_check={self.cmd.frame_control.crc_check}, "
-                f"ack={self.cmd.frame_control.ack}, "
-                f"sn={self.cmd.sn}, "
-                f"data={self.cmd.data}, "
-                f"crc={self.cmd.crc}"
-                f")"
-            )
-        else:
-            return (
-                f"{self.__class__.__name__}("
-                f"encryption={self.cmd.frame_control.encryption}, "
-                f"crc_check={self.cmd.frame_control.crc_check}, "
-                f"ack={self.cmd.frame_control.ack}, "
-                f"sn={self.cmd.sn}, "
-                f"data={self.cmd.data}"
-                f")"
-            )

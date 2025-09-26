@@ -19,7 +19,7 @@ from . import AckCommand
 class GetVersionCommand(AckCommand):
     """GetVersionCommand"""
 
-    __slots__ = ("__cmd",)
+    __slots__ = ("cmd",)
 
     def __init__(
         self,
@@ -30,14 +30,14 @@ class GetVersionCommand(AckCommand):
         sector_data: Sector_Data = Sector_Data.disable,
     ) -> None:
         """init."""
-        self.__cmd = ControlCommand(
+        self.cmd = ControlCommand(
             pocket_type=PocketType(type_field=TypeField.Control, func_code=ControlAddress.GET_VERSION),
             frame_control=FrameControl(
                 encryption=encryption,
                 crc_check=crc_check,
                 direction=direction,
                 ack=ack,
-                sector_Data=sector_data,
+                sector_data=sector_data,
             ),
             sn=SerialNumber().obj,
         )
@@ -45,13 +45,9 @@ class GetVersionCommand(AckCommand):
     @property
     def sn(self) -> str:
         """SN"""
-        return self.__cmd.sn
+        return self.cmd.sn
 
     @property
     def data_length(self) -> int:
         """data_length"""
-        return self.__cmd.data_length
-
-    def __str__(self) -> str:
-        """__str__"""
-        return self.__cmd.hex()
+        return self.cmd.data_length

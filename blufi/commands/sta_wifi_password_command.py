@@ -21,7 +21,7 @@ class StaWifiPasswordCommand(AckCommand):
     """StaWifiPasswordCommand"""
 
     __slots__ = (
-        "__cmd",
+        "cmd",
         "__content",
     )
 
@@ -36,14 +36,14 @@ class StaWifiPasswordCommand(AckCommand):
     ) -> None:
         """init."""
         self.__content = content
-        self.__cmd = ControlCommandWithData(
+        self.cmd = ControlCommandWithData(
             pocket_type=PocketType(type_field=TypeField.Data, func_code=DataAddress.STA_WIFI_PASSWORD),
             frame_control=FrameControl(
                 encryption=encryption,
                 crc_check=crc_check,
                 direction=direction,
                 ack=ack,
-                sector_Data=sector_data,
+                sector_data=sector_data,
             ),
             sn=SerialNumber().obj,
             data=self.password,
@@ -55,7 +55,3 @@ class StaWifiPasswordCommand(AckCommand):
         data = self.__content.encode().hex()
         assert_hex_str(data)
         return data
-
-    def __str__(self) -> str:
-        """__str__"""
-        return self.__cmd.hex()

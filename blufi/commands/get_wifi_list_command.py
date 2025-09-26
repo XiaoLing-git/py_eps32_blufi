@@ -19,7 +19,7 @@ from . import AckCommand
 class GetWifiListCommand(AckCommand):
     """GetWifiListCommand"""
 
-    __slots__ = ("__cmd",)
+    __slots__ = ("cmd",)
 
     def __init__(
         self,
@@ -31,18 +31,14 @@ class GetWifiListCommand(AckCommand):
     ) -> None:
         """init."""
 
-        self.__cmd = ControlCommand(
+        self.cmd = ControlCommand(
             pocket_type=PocketType(type_field=TypeField.Control, func_code=ControlAddress.GET_WIFI_LIST),
             frame_control=FrameControl(
                 encryption=encryption,
                 crc_check=crc_check,
                 direction=direction,
                 ack=ack,
-                sector_Data=sector_data,
+                sector_data=sector_data,
             ),
             sn=SerialNumber().obj,
         )
-
-    def __str__(self) -> str:
-        """__str__"""
-        return self.__cmd.hex()

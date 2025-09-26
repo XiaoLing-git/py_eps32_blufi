@@ -20,7 +20,7 @@ from . import AckCommand
 class SetSecurityModeCommand(AckCommand):
     """SetSecurityModeCommand"""
 
-    __slots__ = ("__cmd",)
+    __slots__ = ("cmd",)
 
     def __init__(
         self,
@@ -34,14 +34,14 @@ class SetSecurityModeCommand(AckCommand):
     ) -> None:
         """init."""
 
-        self.__cmd = ControlCommandWithData(
+        self.cmd = ControlCommandWithData(
             pocket_type=PocketType(type_field=TypeField.Control, func_code=ControlAddress.SET_SEC_MODE),
             frame_control=FrameControl(
                 encryption=encryption,
                 crc_check=crc_check,
                 direction=direction,
                 ack=ack,
-                sector_Data=sector_data,
+                sector_data=sector_data,
             ),
             sn=SerialNumber().obj,
             data=self.__data(data_frame, control_frame),
@@ -57,13 +57,9 @@ class SetSecurityModeCommand(AckCommand):
     @property
     def sn(self) -> str:
         """SN"""
-        return self.__cmd.sn
+        return self.cmd.sn
 
     @property
     def data_length(self) -> int:
         """data_length"""
-        return self.__cmd.data_length
-
-    def __str__(self) -> str:
-        """__str__"""
-        return self.__cmd.hex()
+        return self.cmd.data_length
