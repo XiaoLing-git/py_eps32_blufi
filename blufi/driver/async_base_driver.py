@@ -18,7 +18,7 @@ class AsyncBlufiBaseDriver(AsyncBlufiWriteRead):
         """async_connect."""
         await super().async_connect()
         ack_cmd = AckCommand()
-        response = await self.async_read_after_write(str(ack_cmd))
+        response = await self.async_read_after_write(ack_cmd.hex())
         blufi_response = BlufiResponse(response.hex())
         if blufi_response.pocket_type.func_code is not ControlAddress.ACK:
             raise AsyncBlufiConnectionError("device init fail")
@@ -30,12 +30,11 @@ class AsyncBlufiBaseDriver(AsyncBlufiWriteRead):
     async def async_send_command(self, cmd: Commands_Type) -> None:
         """async_send_command"""
         logger.info(f"Send: {cmd}") if self.debug_mode else None
-        await self.write(str(cmd), clear_response=False)
+        await self.write(cmd.hex(), clear_response=False)
 
     def get_response(self) -> BlufiResponse:
         """get_response"""
         response = BlufiResponse(self.response)
-        logger.info(f"read: {response}") if self.debug_mode else None
         return response
 
     def is_connected(self) -> bool:

@@ -56,6 +56,7 @@ class BlufiResponse:
         """sn"""
         return self.__content[4:6]
 
+    @property
     def crc(self) -> str:
         """crc"""
         if self.frame_control.crc_check is CrcCheck.enable:
@@ -82,7 +83,7 @@ class BlufiResponse:
 
     def __str__(self) -> str:
         """__str__"""
-        if self.frame_control.crc_check is CrcCheck.enable:
+        if self.frame_control.crc_check is CrcCheck.disable:
             if self.data_length == 0:
                 return (
                     f"{self.__class__.__name__}("

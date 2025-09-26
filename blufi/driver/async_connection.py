@@ -30,7 +30,7 @@ class AsyncBlufiConnection:
     @property
     def debug_mode(self) -> bool:
         """debug mode"""
-        return self.debug_mode
+        return self.__debug_mode
 
     @property
     def _client(self) -> BleakClient:
