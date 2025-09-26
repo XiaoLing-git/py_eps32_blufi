@@ -13,12 +13,13 @@ from ..models import (
     TypeField,
 )
 from ..serial_number import SerialNumber
+from . import AckCommand
 
 
-class ConnectWifiCommand:
+class ConnectWifiCommand(AckCommand):
     """ConnectWifiCommand"""
 
-    __slots__ = ("__cmd",)
+    __slots__ = ("cmd",)
 
     def __init__(
         self,
@@ -30,18 +31,36 @@ class ConnectWifiCommand:
     ) -> None:
         """init."""
 
-        self.__cmd = ControlCommand(
+        self.cmd = ControlCommand(
             pocket_type=PocketType(type_field=TypeField.Control, func_code=ControlAddress.CONNECT_WIFI),
             frame_control=FrameControl(
                 encryption=encryption,
                 crc_check=crc_check,
                 direction=direction,
                 ack=ack,
-                sector_Data=sector_data,
+                sector_data=sector_data,
             ),
             sn=SerialNumber().obj,
         )
 
     def __str__(self) -> str:
         """__str__"""
-        return self.__cmd.hex()
+        if self.cmd.frame_control.crc_check is CrcCheck.enable:
+            return (
+                f"{self.__class__.__name__}("
+                f"encryption={self.cmd.frame_control.encryption}, "
+                f"crc_check={self.cmd.frame_control.crc_check}, "
+                f"ack={self.cmd.frame_control.ack}, "
+                f"sn={self.cmd.sn}, "
+                f"crc={self.cmd.crc}"
+                f")"
+            )
+        else:
+            return (
+                f"{self.__class__.__name__}("
+                f"encryption={self.cmd.frame_control.encryption}, "
+                f"crc_check={self.cmd.frame_control.crc_check}, "
+                f"ack={self.cmd.frame_control.ack}, "
+                f"sn={self.cmd.sn}"
+                f")"
+            )

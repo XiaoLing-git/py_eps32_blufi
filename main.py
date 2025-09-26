@@ -5,7 +5,7 @@ import time
 
 from blufi.commands import CustomDataCommand, AckCommand, GetVersionCommand, SetSecurityModeCommand, GetWifiListCommand, \
     GetWifiStatusCommand, StaWifiSSIDCommand, StaWifiPasswordCommand, ConnectWifiCommand, DisconnectWifiCommand, \
-    BleDisconnectCommand
+    BleDisconnectCommand, CACertificationCommand
 from blufi.driver.async_base_driver import AsyncBlufiBaseDriver
 from blufi.driver.async_write_read import AsyncBlufiWriteRead
 from blufi.errors import BlufiBaseException
@@ -151,6 +151,8 @@ if __name__ == "__main__":
     print(BleDisconnectCommand())
     print(AckCommand())
     print(AckCommand())
+    print(CACertificationCommand(content="dddfff"))
+    print(CACertificationCommand(crc_check=CrcCheck.enable, content="dddfff"))
 
     # asyncio.run(fun())
     #

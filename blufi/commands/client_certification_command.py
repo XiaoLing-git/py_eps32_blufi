@@ -14,12 +14,13 @@ from ..models import (
 )
 from ..serial_number import SerialNumber
 from ..utils import assert_hex_str
+from . import AckCommand
 
 
-class ClientCertificationCommand:
+class ClientCertificationCommand(AckCommand):
     """ClientCertificationCommand"""
 
-    __slots__ = ("__cmd",)
+    __slots__ = ("cmd",)
 
     def __init__(
         self,
@@ -32,14 +33,14 @@ class ClientCertificationCommand:
     ) -> None:
         """init."""
         assert_hex_str(content)
-        self.__cmd = ControlCommandWithData(
+        self.cmd = ControlCommandWithData(
             pocket_type=PocketType(type_field=TypeField.Data, func_code=DataAddress.CLIENT_CERTIFICATION),
             frame_control=FrameControl(
                 encryption=encryption,
                 crc_check=crc_check,
                 direction=direction,
                 ack=ack,
-                sector_Data=sector_data,
+                sector_data=sector_data,
             ),
             sn=SerialNumber().obj,
             data=content,
@@ -47,4 +48,24 @@ class ClientCertificationCommand:
 
     def __str__(self) -> str:
         """__str__"""
-        return self.__cmd.hex()
+        if self.cmd.frame_control.crc_check is CrcCheck.enable:
+            return (
+                f"{self.__class__.__name__}("
+                f"encryption={self.cmd.frame_control.encryption}, "
+                f"crc_check={self.cmd.frame_control.crc_check}, "
+                f"ack={self.cmd.frame_control.ack}, "
+                f"sn={self.cmd.sn}, "
+                f"data={self.cmd.data}, "
+                f"crc={self.cmd.crc}"
+                f")"
+            )
+        else:
+            return (
+                f"{self.__class__.__name__}("
+                f"encryption={self.cmd.frame_control.encryption}, "
+                f"crc_check={self.cmd.frame_control.crc_check}, "
+                f"ack={self.cmd.frame_control.ack}, "
+                f"sn={self.cmd.sn}, "
+                f"data={self.cmd.data}"
+                f")"
+            )
