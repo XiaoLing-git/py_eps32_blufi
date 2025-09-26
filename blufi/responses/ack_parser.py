@@ -13,4 +13,4 @@ class AckParser(Parser):
 
     def __str__(self) -> str:
         """str"""
-        return f"{self.__class__.__name__}(" f"response_sn={self.response_sn}, " f"content={self.content})"
+        return f"{self.__class__.__name__}(response_sn={self.response_sn}, content={self.content})"

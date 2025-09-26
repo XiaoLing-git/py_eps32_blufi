@@ -37,4 +37,11 @@ class WifiStatusParser(Parser):
 
     def __str__(self) -> str:
         """str"""
-        return f"{self.__class__.__name__}(op_mode={self.op_mode}, soft_ap_status={self.soft_ap_status}, sta_status={self.sta_status}, info={self.info!r})"
+        return (
+            f"{self.__class__.__name__}("
+            f"op_mode={self.op_mode}, "
+            f"soft_ap_status={self.soft_ap_status}, "
+            f"sta_status={self.sta_status}, "
+            f"info={self.info!r}"
+            f")"
+        )

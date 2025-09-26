@@ -26,13 +26,11 @@ class CustomDataParser(Parser):
             for i in content.split("}"):
                 try:
                     temp = json.loads(i + "}")
-                    print(type(temp), temp)
                     result.append(temp)
-                except Exception as e:
-                    print(e)
+                except Exception:
+                    pass
         else:
             result.append(self.content)
-        print("result", type(result), result)
         return result
 
     def __str__(self) -> str:
