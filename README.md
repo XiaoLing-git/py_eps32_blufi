@@ -61,3 +61,62 @@ make check
 ```
 
 ### Example
+```python
+import asyncio
+from blufi.commands import CustomDataCommand, AckCommand
+from blufi.driver.async_base_driver import AsyncBlufiBaseDriver
+from blufi.driver import BlufiBaseDriver
+
+
+async def async_fun():
+    ble = None
+    try:
+        ble = AsyncBlufiBaseDriver(device_address="8CBFEA852D7E", timeout=20,debug=True)
+
+        await ble.async_connect()
+
+
+        command = AckCommand()
+        await ble.async_send_command(command)
+        response = await ble.async_get_response()
+        print(response)
+
+        cmd = CustomDataCommand(content="wifitest")
+        await ble.async_send_command(cmd)
+        response = await ble.async_get_response()
+        print(response)
+    except Exception as e:
+        raise e
+    finally:
+        await ble.async_disconnect()
+        
+def fun():
+   ble = None
+   try:
+      ble = BlufiBaseDriver(device_address="8CBFEA852D7E", timeout=20, debug=True)
+      
+      ble.connect()
+      
+      command = AckCommand()
+      ble.send_command(command)
+      response = ble.get_response()
+      print(response)
+      print("-" * 100)
+      command = CustomDataCommand(content="wifitest")
+      ble.send_command(command)
+      response = ble.get_response()
+      print(response)
+   except Exception as e:
+     raise e
+   finally:
+     ble.disconnect()
+
+
+if __name__ == "__main__":
+    fun()
+    
+    asyncio.run(async_fun())
+
+```
+
+

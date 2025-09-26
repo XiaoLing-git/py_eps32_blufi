@@ -17,42 +17,26 @@ logging.basicConfig(
 )
 
 async def fun():
+    ble = None
     try:
         ble = AsyncBlufiBaseDriver(device_address="8CBFEA852D7E", timeout=20,debug=True)
 
         await ble.async_connect()
 
-        start_time = time.time()
-        while True:
-            if time.time() - start_time > 3:
-                break
-            # print(ble.response_parser)
-            ack = AckCommand()
-            # print(ack)
-            await ble.async_send_command(ack)
-            ble.get_response()
-            time.sleep(0.1)
-            res = ble.get_response()
 
-        print("-" * 100)
+        command = AckCommand()
+        await ble.async_send_command(command)
+        response = await ble.async_get_response()
+        print(response)
+
         cmd = CustomDataCommand(content="wifitest")
         await ble.async_send_command(cmd)
-        start_time = time.time()
-        while True:
-            if time.time() - start_time > 20:
-                break
-            await asyncio.sleep(0.1)
-            p = ble.get_response().parser()
-            if isinstance(p, CustomDataParser):
-                print(p.format)
-
-
-
+        response = await ble.async_get_response()
+        print(response)
     except Exception as e:
         raise e
     finally:
         await ble.async_disconnect()
-    # await ble.async_disconnect()
 
 
 if __name__ == "__main__":
@@ -62,26 +46,12 @@ if __name__ == "__main__":
 
     ble.connect()
 
-    start_time = time.time()
-    while True:
-        if time.time() - start_time > 3:
-            break
-        # print(ble.response_parser)
-        ack = AckCommand()
-        # print(ack)
-        ble.send_command(ack)
-        ble.get_response()
-        time.sleep(0.1)
-        res = ble.get_response()
-
+    command = AckCommand()
+    ble.send_command(command)
+    response = ble.get_response()
+    print(response)
     print("-" * 100)
-    cmd = CustomDataCommand(content="wifitest")
-    ble.send_command(cmd)
-    start_time = time.time()
-    while True:
-        if time.time() - start_time > 20:
-            break
-        time.sleep(0.1)
-        p = ble.get_response().parser()
-        if isinstance(p, CustomDataParser):
-            print(p.format)
+    command = CustomDataCommand(content="wifitest")
+    ble.send_command(command)
+    response = ble.get_response()
+    print(response)
